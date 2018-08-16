@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "page-store.location",
+  "type": "java.lang.String",
+  "description": "A description for 'page-store.location'"
+}]}

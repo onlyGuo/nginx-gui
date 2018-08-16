@@ -1,0 +1,11 @@
+server:
+  port: 8889
+spring:
+  freemarker:
+    suffix: .html
+    cache: false
+  application:
+    name: nginx
+
+page-store: 
+  location: D:\store
