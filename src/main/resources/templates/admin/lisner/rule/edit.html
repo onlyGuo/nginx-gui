@@ -2,7 +2,7 @@
 <html lang="zh-cn" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>编辑监听配置</title>
+    <title>编辑监听规则</title>
     <style>
         .selectBox{
             display: inline-block;
@@ -53,6 +53,22 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <label class="layui-form-label">监听域</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_server" value="${(location.server)!''}" placeholder="请输入监听域(host:port)"  class="layui-input" style="width:calc(100% - 115px); display: inline-block;">
+                <div class="selectBox">
+                    <a class="layui-btn layui-btn-primary" id="selectServerBtn">选择监听域</a>
+                    <ul>
+                        <#if nginxServers??>
+                            <#list nginxServers as ser>
+                                <li value="${ser.name!''}:${((ser.port)!'')?c}">${ser.name!''}:${((ser.port)!'')?c}</li>
+                            </#list>
+                        </#if>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">代理地址</label>
             <div class="layui-input-block">
                 <input type="text" id="input_proxyPass" value="${(location.proxyPass)!''}" placeholder="请输代理地址"  class="layui-input" style="width:calc(100% - 115px); display: inline-block;">
@@ -61,7 +77,7 @@
                     <ul>
                         <#if nginxUpstreams??>
                             <#list nginxUpstreams as agent>
-                                <li value="${agent.value!''}">${agent.desp!''}</li>
+                                <li value="http://${agent.value!''}">${agent.desp!''}</li>
                             </#list>
                         </#if>
                     </ul>
@@ -164,6 +180,25 @@
                 }
             });
 
+            //选择已有负载域按钮事件
+            $("#selectServerBtn").click(function(){
+                var $selectUl = $(this).parent().find("ul");
+                //显示下拉选择框并绑定事件
+                if($selectUl.css("display") == "block"){
+                    $selectUl.css("display", "none");
+                    $(this).html("选择监听域");
+                }else{
+                    $(this).html("取消选择");
+                    $selectUl.css("display", "block");
+                    $selectUl.find("li").click(function(){
+                        var value = $(this).attr("value");
+                        $("#input_server").val(value);
+                        $(this).parent().css("display", "none");
+                        $(this).parent().parent().find("a").html("选择监听域");
+                    });
+                }
+            });
+
     		//删除节点事件
     		function deleteNode(t){
     			console.log(t);
@@ -180,6 +215,7 @@
                     root:$("#input_root").val(),
                     index:$("#input_index").val(),
                     proxyPass:$("#input_proxyPass").val(),
+                    server:$("#input_server").val(),
                     proxySetHeader:[]
     			};
     			//封装统一错误页面

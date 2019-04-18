@@ -34,6 +34,17 @@ public class NginxLocation {
   // 映射规则Id(Base64UrlEncoding)
   private String pathId;
 
+  // 所属监听域(所属server_name:port)
+  private String server;
+
+  public String getServer() {
+    return server;
+  }
+
+  public void setServer(String server) {
+    this.server = server;
+  }
+
   public String getPathId() {
     return pathId;
   }

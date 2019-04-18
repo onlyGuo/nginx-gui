@@ -1,11 +1,14 @@
 package com.aiyi.server.manager.nginx.controller;
 
+import com.aiyi.server.manager.nginx.beam.NginxServer;
 import com.aiyi.server.manager.nginx.bean.TableDate;
 import com.aiyi.server.manager.nginx.bean.nginx.NginxProxySetHeader;
 import com.aiyi.server.manager.nginx.bean.nginx.NginxLocation;
 import com.aiyi.server.manager.nginx.bean.nginx.NginxUpstream;
 import com.aiyi.server.manager.nginx.bean.result.Result;
 import com.aiyi.server.manager.nginx.common.NginxUtils;
+import com.aiyi.server.manager.nginx.exception.NginxServiceManagerException;
+import com.aiyi.server.manager.nginx.manager.NginxManager;
 import com.aiyi.server.manager.nginx.utils.Vali;
 import com.github.odiszapc.nginxparser.*;
 import org.springframework.stereotype.Controller;
@@ -13,11 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.ValidationException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Project : git
@@ -34,6 +35,12 @@ public class LIsnerRuleController {
 
   @Resource
   private AgentController agentController;
+
+  @Resource
+  private LisnerController lisnerController;
+
+  @Resource
+  private NginxManager nginxManager;
 
   @RequestMapping("/")
   public String index(){
@@ -75,16 +82,254 @@ public class LIsnerRuleController {
     }
     List<NginxUpstream> nginxUpstreams = agentController.listUpstreams(NginxUtils.read());
     model.addAttribute("nginxUpstreams", nginxUpstreams);
+
+    List<NginxServer> nginxServers = lisnerController.listLisner(NginxUtils.read());
+    model.addAttribute("nginxServers", nginxServers);
+
     return "admin/lisner/rule/edit";
   }
 
   @PutMapping(value = "{rule}/edit")
   @ResponseBody
-  public Result saveRule(@PathVariable String rule, Model model){
-    if (Vali.isFormEpt(rule)){
+  public String saveRule(@PathVariable String rule, @RequestBody NginxLocation location, Model model){
 
+//    if (Vali.isFormEpt(rule)){
+//      throw new ValidationException("请填写监听规则");
+//    }
+//    rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
+
+    NgxConfig conf = NginxUtils.read();
+    //备份配置
+    String bakConf = NginxUtils.toString(conf);
+    //尝试写入文件
+    try {
+      //更新Config对象
+      editRuleConf(location, conf);
+      //更新配置文件
+      NginxUtils.save(conf);
+      //尝试重启加载新的配置
+      nginxManager.reload();
+    }catch (Exception e){
+      NginxUtils.save(bakConf);
+      if (e instanceof ValidationException){
+        throw e;
+      }
+      throw new NginxServiceManagerException("已回滚到上次配置:" + e.getMessage(), e);
     }
-    return null;
+    return "SUCCESS";
+  }
+
+
+  private void editRuleConf(NginxLocation location, NgxConfig conf){
+    NgxBlock http = conf.findBlock("http");
+    List<NgxEntry> servers = http.findAll(NgxConfig.BLOCK, "server");
+    for (NgxEntry enty : servers) {
+      NgxBlock ser = (NgxBlock) enty;
+      //端口
+      NgxParam listen = ser.findParam("listen");
+      if (null == listen) {
+        continue;
+      }
+      //域名
+      NgxParam server_name = ser.findParam("server_name");
+      if (null == server_name) {
+        continue;
+      }
+      // 找到块
+      if ((server_name.getValue().trim() + ":" + listen.getValue().trim()).equals(location.getServer().trim())){
+
+        NgxBlock updateSer = new NgxBlock();
+        updateSer.addValue("server");
+        Result isInsert = new Result();
+        isInsert.setSuccess(true);
+
+        // 开始找规则
+        ser.forEach(e -> {
+          updateSer.addEntry(e);
+          if (!(e instanceof NgxBlock)){
+            return;
+          }
+          NgxBlock locItem = (NgxBlock)e;
+          String value = locItem.getValue().trim();
+          if (value.equals(location.getPath())){
+            updateSer.remove(e);
+            // TODO 更新
+            NgxBlock updateBlock = new NgxBlock();
+            updateBlock.addValue("location " + location.getPath());
+
+            // 注释
+            List<NgxEntry> confs = new ArrayList<>(locItem.getEntries());
+            if (confs.size() > 0 && confs.get(0) instanceof NgxComment){
+              confs.remove(0);
+            }
+            if (!Vali.isEpt(location.getName())){
+              NgxComment comment = new NgxComment("#" + location.getName());
+              confs.add(0, comment);
+            }
+
+            // 代理地址
+            if (!Vali.isEpt(location.getProxyPass())){
+              NgxParam proxy_pass = new NgxParam();
+              proxy_pass.addValue("proxy_pass " + location.getProxyPass());
+              confs = setNgxParam(confs, proxy_pass, "proxy_pass");
+            }
+
+            // 根目录
+            if (!Vali.isEpt(location.getRoot())){
+              NgxParam root = new NgxParam();
+              root.addValue("root " + location.getRoot());
+              confs = setNgxParam(confs, root, "root");
+            }
+
+            // 索引文件
+            NgxParam root = new NgxParam();
+            if (!Vali.isEpt(location.getIndex())){
+              NgxParam index = new NgxParam();
+              root.addValue("index " + location.getIndex().replace(" ", "").replace(",", " "));
+              confs = setNgxParam(confs, index, "index");
+            }
+
+
+            // 协议头
+            List<NginxProxySetHeader> proxySetHeader = location.getProxySetHeader();
+
+            Iterator<NgxEntry> iterator = confs.iterator();
+            while (iterator.hasNext()){
+              NgxEntry next = iterator.next();
+              if (next instanceof NgxParam) {
+                NgxParam param = ((NgxParam) next);
+                if (param.getName().equals("proxy_set_header")){
+                  if (!hasHeader(proxySetHeader, param)){
+                    iterator.remove();
+                  }
+                }
+              }
+            }
+            for (NginxProxySetHeader header: proxySetHeader){
+              if (null == header.getHeader() || Vali.isEpt(header.getHeader()) || null == header.getValue() || Vali.isEpt(header.getValue())){
+                continue;
+              }
+              NgxParam proxy_set_header = new NgxParam();
+              proxy_set_header.addValue("proxy_set_header " + header.getHeader().trim() + " " + header.getValue().trim());
+              confs = setNgxParam(confs, proxy_set_header, "proxy_set_header " + header.getHeader().trim());
+            }
+
+            for (NgxEntry entry: confs){
+              updateBlock.addEntry(entry);
+            }
+            updateSer.addEntry(updateBlock);
+
+            isInsert.setSuccess(false);
+
+          }
+        });
+        // TODO 添加
+        if (isInsert.isSuccess()){
+          NgxBlock updateBlock = new NgxBlock();
+          updateBlock.addValue("location " + location.getPath());
+          List<NgxEntry> confs = new ArrayList<>();
+          if (!Vali.isEpt(location.getName())){
+            NgxComment comment = new NgxComment("#" + location.getName());
+            confs.add(0, comment);
+          }
+
+          // 代理地址
+          if (!Vali.isEpt(location.getProxyPass())){
+            NgxParam proxy_pass = new NgxParam();
+            proxy_pass.addValue("proxy_pass " + location.getProxyPass());
+            confs.add(proxy_pass);
+          }
+
+          // 根目录
+          if (!Vali.isEpt(location.getRoot())){
+            NgxParam root = new NgxParam();
+            root.addValue("root " + location.getRoot());
+            confs.add(root);
+          }
+
+          // 索引文件
+          if (!Vali.isEpt(location.getIndex())){
+            NgxParam index = new NgxParam();
+            index.addValue("index " + location.getIndex().replace(" ", "").replace(",", " "));
+            confs.add(index);
+          }
+
+
+          // 协议头
+          List<NginxProxySetHeader> proxySetHeader = location.getProxySetHeader();
+
+          for (NginxProxySetHeader header: proxySetHeader){
+            NgxParam proxy_set_header = new NgxParam();
+            if (null == header.getHeader() || Vali.isEpt(header.getHeader()) || null == header.getValue() || Vali.isEpt(header.getValue())){
+              continue;
+            }
+            proxy_set_header.addValue("proxy_set_header " + header.getHeader().trim() + " " + header.getValue().trim());
+            confs.add(proxy_set_header);
+          }
+
+          for (NgxEntry entry: confs){
+            updateBlock.addEntry(entry);
+          }
+          updateSer.addEntry(updateBlock);
+        }
+
+        conf.remove(http);
+        http.remove(ser);
+        http.addEntry(updateSer);
+        conf.addEntry(http);
+        return;
+      }
+    }
+    throw new ValidationException("Nginx中不存在" + location.getServer() + "的监听域或已被删除.");
+  }
+
+  /**
+   * 配置中是否存在指定的http头
+   * @param proxySetHeader
+   *      配置
+   * @param header
+   *      指定头信息
+   * @return
+   */
+  private boolean hasHeader(List<NginxProxySetHeader> proxySetHeader, NgxParam header){
+    List<String> values = header.getValues();
+    String value = "";
+    for(String v: values){
+      value += v + " ";
+    }
+    value = value.trim();
+    for (NginxProxySetHeader h: proxySetHeader){
+      if (value.startsWith("proxy_set_header " + h.getHeader())){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private List<NgxEntry> setNgxParam(List<NgxEntry> servConfs, NgxParam param, String name){
+    boolean has = false;
+    List<NgxEntry> res = new ArrayList<>();
+    for (NgxEntry servConf:
+            servConfs) {
+      if (servConf instanceof NgxParam){
+        NgxParam p = ((NgxParam)servConf);
+        String value = p.getName() + " ";
+        List<String> values = p.getValues();
+        for(String v: values){
+          value += v + " ";
+        }
+        value = value.trim();
+        if (value.startsWith(name)){
+          servConf = param;
+          has = true;
+        }
+      }
+      res.add(servConf);
+    }
+    if (!has){
+      res.add(param);
+    }
+    return res;
   }
 
 
@@ -102,6 +347,19 @@ public class LIsnerRuleController {
 
     serverList.forEach(e -> {
       NgxBlock serBlock = (NgxBlock)e;
+      final StringBuffer serverName = new StringBuffer("localhost:8080");
+      NgxParam serverNameParam = serBlock.find(NgxParam.class, "server_name");
+      if (null != serverNameParam){
+        serverName.setLength(0);
+        serverName.append(serverNameParam.getValue().trim()).append(":8080");
+      }
+      NgxParam serverListenParam = serBlock.find(NgxParam.class, "listen");
+      if (null != serverListenParam){
+        String tempServerName = serverName.toString().replace(":8080", "");
+        serverName.setLength(0);
+        serverName.append(tempServerName).append(":").append(serverListenParam.getValue().trim());
+      }
+
 
       List<NgxEntry> locationList = serBlock.findAll(NgxBlock.class, "location");
       locationList.forEach(l -> {
@@ -148,7 +406,7 @@ public class LIsnerRuleController {
         String index = null;
         NgxParam indexParam = locaBlock.findParam("index");
         if(indexParam != null){
-          index = indexParam.getValue();
+          index = indexParam.getValue().replace(" ", ", ");
         }
 
         // 负载地址
@@ -186,6 +444,7 @@ public class LIsnerRuleController {
           location.setIndex(index);
           location.setRoot(root);
           location.setPathId(Base64.getUrlEncoder().encodeToString(path.getBytes(Charset.forName("UTF-8"))));
+          location.setServer(serverName.toString());
           result.add(location);
         }
 

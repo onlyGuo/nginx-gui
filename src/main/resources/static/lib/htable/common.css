@@ -19,7 +19,7 @@
     line-height: 35px;
 }
 .aiyi-tools-table-list .head th{
-    min-width: 200px;
+    min-width: 100px;
 }
 
 .aiyi-tools-table-list .head th:hover{
@@ -27,10 +27,12 @@
 }
 .aiyi-tools-table-list tr{
     line-height: 30px;
-    border: 1px solid #d4ecea
+    border: 1px solid #d4ecea;
 }
 .aiyi-tools-table-list td{
-    border: 1px solid #d4ecea
+    border: 1px solid #d4ecea;
+    word-wrap: break-word;
+    max-width: 400px;
 }
 .aiyi-tools-table-list tr:hover{
     /*background-color: #b2d6cb;*/

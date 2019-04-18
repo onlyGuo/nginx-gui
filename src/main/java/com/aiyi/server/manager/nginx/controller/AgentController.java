@@ -121,7 +121,6 @@ public class AgentController {
 	    		}
 	    		
 		}
-	    System.out.println(upstream);
 	    //更新Conf
 	    addUpstream(conf, upstream, old);
 	    //尝试写到Nginx配置文件
