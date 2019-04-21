@@ -49,10 +49,10 @@ public class DiskInfo {
 
   public String getName() {
     if (null != name) {
-      name = name.replace("\\", "_").replace("/", "_");
+      name = name.replace("\\", "_").replace("/", "_").replace(":", "_");
       return name;
     }
-    return fileSystem.getDevName().replace("\\", "_").replace("/", "_");
+    return fileSystem.getDevName().replace("\\", "_").replace("/", "_").replace(":", "_");
   }
 
   public void setName(String name) {

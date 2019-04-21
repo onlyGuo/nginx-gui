@@ -2,7 +2,7 @@ package com.aiyi.server.manager.nginx.applicationconf;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.aiyi.server.manager.nginx.interceptor.SessionInterceptor;
 
@@ -17,7 +17,7 @@ import com.aiyi.server.manager.nginx.interceptor.SessionInterceptor;
  *                      郭胜凯 2018年2月2日 create
  */
 @Configuration
-public class SessionLoginConf extends WebMvcConfigurerAdapter {
+public class SessionLoginConf implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {

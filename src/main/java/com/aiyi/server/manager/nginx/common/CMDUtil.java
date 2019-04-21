@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
-
 import com.aiyi.server.manager.nginx.exception.NginxServiceManagerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CMDUtil {
 	
-  private static Logger logger = Logger.getLogger(CMDUtil.class);
+  private static Logger logger = LoggerFactory.getLogger(CMDUtil.class);
 
   public static String excuse(String src) {
 	logger.info("Do excust CMD: " + src);

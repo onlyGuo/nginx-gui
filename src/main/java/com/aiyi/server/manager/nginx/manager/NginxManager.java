@@ -1,6 +1,7 @@
 package com.aiyi.server.manager.nginx.manager;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.aiyi.server.manager.nginx.common.CMDUtil;
@@ -24,7 +25,7 @@ import com.aiyi.server.manager.nginx.utils.PropsUtils;
 @Component
 public class NginxManager {
 
-  private Logger logger = Logger.getLogger(getClass());
+  private Logger logger = LoggerFactory.getLogger(getClass());
   
   /**
    * 服务是否启动
