@@ -43,17 +43,17 @@
     		<div class="layui-form-item">
             <label class="layui-form-label">监听域名</label>
             <div class="layui-input-block">
-                <input type="text" id="input_name" value="${(server.name)!''}" placeholder="请输入监听地址，默认为localhost"  class="layui-input" style="width:calc(100% - 245px); display: inline-block;">
-                <div class="selectBox">
-                    <a class="layui-btn layui-btn-primary" id="selectAgentBtn">选择负载域</a>
-                    <ul>
-                        <#if nginxUpstreams??>
-                            <#list nginxUpstreams as agent>
-                                <li value="${agent.value!''}">${agent.desp!''}</li>
-                            </#list>
-                        </#if>
-                    </ul>
-                </div>
+                <input type="text" id="input_name" value="${(server.name)!''}" placeholder="请输入监听地址，默认为localhost"  class="layui-input" style="width:calc(100% - 131px); display: inline-block;">
+<!--                <div class="selectBox">-->
+<!--                    <a class="layui-btn layui-btn-primary" id="selectAgentBtn">选择负载域</a>-->
+<!--                    <ul>-->
+<!--                        <#if nginxUpstreams??>-->
+<!--                            <#list nginxUpstreams as agent>-->
+<!--                                <li value="${agent.value!''}">${agent.desp!''}</li>-->
+<!--                            </#list>-->
+<!--                        </#if>-->
+<!--                    </ul>-->
+<!--                </div>-->
                 <#if server??>
                     <input type="number" id="input_port" value="${((server.port)!'')?c}" placeholder="监听端口" class="layui-input"  style="width:125px; display: inline-block;"">
                 <#else>

@@ -45,7 +45,8 @@ public class NginxUtils {
 	 */
 	public static void save(NgxConfig conf) {
 		try(FileOutputStream out = new FileOutputStream(Configer.getNginxConfPath())) {
-			out.write(toString(conf).getBytes("UTF-8"));
+			String s = toString(conf);
+			out.write(s.getBytes("UTF-8"));
 			out.flush();
 		} catch (Exception e) {
 			throw new NginxServiceManagerException("Nginx配置文件写入失败");

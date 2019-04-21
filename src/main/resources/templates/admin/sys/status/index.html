@@ -17,7 +17,7 @@
 	<script type="text/javascript" src="../../../lib/echarts/macarons.js"></script>
 	<script type="text/javascript" src="../../../js/ajax/core.js"></script>
 	<script type="text/javascript" src="../../../js/layerAjaxMsg/default.js"></script>
-	<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>
+<!--	<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>-->
 	<link rel="stylesheet" href="../../../lib/layer-v3.1.1/layer/theme/default/layer.css">
 	<style type="text/css">
 		.layui-btn.dis{
@@ -236,7 +236,10 @@
 				  	});
 				});
 			}else{
-				layer.msg(res.message);
+				layui.use('layer', function() {
+					var layer = layui.layer;
+					layer.msg(res.message);
+				});
 			}
 		});
 	</script>
