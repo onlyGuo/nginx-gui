@@ -56,21 +56,24 @@
 				    		//parent.window.hTab.open($(this).attr("desc"), "lisner/list/edit/" + $(this).attr("desc"), "监听配置-" + $(this).attr("nm"));
 					}else{
 						var value = $(this).attr("desc");
-						var c = layer.confirm('<p style="padding:10px;">删除监听配置之前请确保其内的监听规则已全部删除。您确定要删除嘛？</p>', {
-						  btn: ['确定','取消'], //按钮
-						  type:1
-						}, function(){
-							var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在模拟启动, 请稍后...", {
-	                    			time: 0,
-	                    			shade: 0.3
-                    			});
-							//删除
-							H.del("../list/" + value + "/edit", {}, function(res){
-								location = location;
+						layui.use('layer', function() {
+							var layer = layui.layer;
+							var c = layer.confirm('<p style="padding:10px;">删除监听配置之前请确保其内的监听规则已全部删除。您确定要删除嘛？</p>', {
+								btn: ['确定','取消'], //按钮
+								type:1
+							}, function(){
+								var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在模拟启动, 请稍后...", {
+									time: 0,
+									shade: 0.3
+								});
+								//删除
+								H.del("../list/" + value + "/edit", {}, function(res){
+									location = location;
+								});
+
+							}, function(){
+								return true;
 							});
-							
-						}, function(){
-						  return true;
 						});
 					}
 				});

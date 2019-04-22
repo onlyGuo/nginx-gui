@@ -2,6 +2,8 @@ package com.aiyi.server.manager.nginx.exception;
 
 import com.aiyi.server.manager.nginx.bean.result.Result;
 import com.aiyi.server.manager.nginx.common.CommonFields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +13,8 @@ import javax.validation.ValidationException;
 
 @RestControllerAdvice
 public class MyExceptionHandler {
+
+    Logger logger = LoggerFactory.getLogger(MyExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     public Result exceptionHandler(HttpServletResponse res, Exception e) {
@@ -30,6 +34,7 @@ public class MyExceptionHandler {
         } else {
             result.setCode(CommonFields.ERROR_CODE.SERVER);
         }
+        logger.error(message, e);
         return result;
     }
 }

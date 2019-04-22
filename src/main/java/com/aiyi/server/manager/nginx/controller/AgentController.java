@@ -3,6 +3,7 @@ package com.aiyi.server.manager.nginx.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.validation.ValidationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +57,8 @@ public class AgentController {
 
     @Resource
     private NginxManager nginxManager;
+
+    private Logger logger = LoggerFactory.getLogger(AgentController.class);
 
     /**
      * 反向代理管理页面
@@ -315,7 +320,7 @@ public class AgentController {
                 NginxUtils.save(conf);
             }
             result.add(upstream);
-            System.out.println(upstream);
+            logger.info(MessageFormat.format("find upstream:{0}", upstream.toString()));
         }
         return result;
     }
