@@ -93,10 +93,11 @@ public class LIsnerRuleController {
   @ResponseBody
   public String saveRule(@PathVariable String rule, @RequestBody NginxLocation location, Model model){
 
-    if (Vali.isFormEpt(rule)){
-      throw new ValidationException("请填写原始监听规则");
+    if (!Vali.isFormEpt(rule)){
+      rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
+    }else{
+      rule = location.getPath();
     }
-    rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
 
     NgxConfig conf = NginxUtils.read();
     //备份配置
