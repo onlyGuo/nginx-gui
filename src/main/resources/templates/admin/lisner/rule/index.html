@@ -47,16 +47,17 @@
                 item.name = (!item.name ? "-" : item.name);
                 item.proxyPass = (!item.proxyPass ? "-" : item.proxyPass);
                 item.root = (!item.root ? "-" : item.root);
-            	item.work = "<a style='line-height:25px;height:25px;' class='layui-btn bj' href='javascript:;' desc = '" + item.pathId + "' nm='" + item.name + "'><i class='fa fa-edit'></i> 编辑</a><a style='line-height:25px;height:25px;' class='layui-btn sc' href='javascript:;' desc='" + item.pathId + "'><i class='fa fa-trash-o'></i> 删除</a>"
+            	item.work = "<a style='line-height:25px;height:25px;' class='layui-btn bj' href='javascript:;' desc = '" + item.pathId + "' nm='" + item.name + "' serv='" + item.server + "'><i class='fa fa-edit'></i> 编辑</a><a style='line-height:25px;height:25px;' class='layui-btn sc' href='javascript:;' desc='" + item.pathId + "' serv='" + item.server + "'><i class='fa fa-trash-o'></i> 删除</a>"
                 return item;
             }, success: function (t) {
 				t.find("td a").click(function(){
 				    if($(this).hasClass("bj")){
 				   	 	//编辑
-				    		edit($(this).attr("desc"))
+				    		edit($(this).attr("serv"), $(this).attr("desc"))
 				    		//parent.window.hTab.open($(this).attr("desc"), "lisner/list/edit/" + $(this).attr("desc"), "监听配置-" + $(this).attr("nm"));
 					}else{
 						var value = $(this).attr("desc");
+						var lcoa = $(this).attr("serv");
 						layui.use('form', function(){
 							var layer = layui.layer;
 							var c = layer.confirm('<p style="padding:10px;">删除监听配置之前请确保其内的监听规则已全部删除。您确定要删除嘛？</p>', {
@@ -68,7 +69,7 @@
 									shade: 0.3
 								});
 								//删除
-								H.del("../list/" + value + "/edit", {}, function(res){
+								H.del("../rule/" + lcoa.replace(":", "_") + "/" + value + "/edit", {}, function(res){
 									location = location;
 								});
 
@@ -85,12 +86,12 @@
 		    edit(null);
 		});
 		
-		function edit(pathId){
+		function edit(serv, pathId){
 			var name = "新建规则";
 			if(pathId){
 				name = "编辑规则";
 			}
-			H.getTxt("../rule/" + pathId + "/edit", function(html){
+			H.getTxt("../rule/" + serv.replace(":", "_") + "/" + pathId + "/edit", function(html){
 				layui.use('form', function() {
 					var layer = layui.layer;
 					layer.open({

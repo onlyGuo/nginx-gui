@@ -71,14 +71,22 @@ public class LIsnerRuleController {
    * @Creation Date : 2018/4/16 下午5:31
    * @Author : 郭胜凯
    */
-  @GetMapping(value = "{rule}/edit")
-  public String editRule(@PathVariable String rule, Model model) {
+  @GetMapping(value = "{location}/{rule}/edit")
+  public String editRule(@PathVariable String location, @PathVariable String rule, Model model) {
     if (!Vali.isEpt(rule) || !rule.equals("-")){
       rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
     }
+    if (!Vali.isFormEpt(location)){
+      location = location.replace("_", ":");
+    }
     List<NginxLocation> nginxLocations = listRules(NginxUtils.read(), null, rule, null);
     if (!nginxLocations.isEmpty()){
-      model.addAttribute("location", nginxLocations.get(0));
+      for (NginxLocation locationItem: nginxLocations){
+        if (location.equals(locationItem.getServer())){
+          model.addAttribute("location", locationItem);
+          break;
+        }
+      }
     }
     List<NginxUpstream> nginxUpstreams = agentController.listUpstreams(NginxUtils.read());
     model.addAttribute("nginxUpstreams", nginxUpstreams);
@@ -89,14 +97,27 @@ public class LIsnerRuleController {
     return "admin/lisner/rule/edit";
   }
 
-  @PutMapping(value = "{rule}/edit")
+  /**
+   * 编辑监听规则
+   * @param rule
+   *      原始规则路径
+   * @param location
+   *      新规则实体
+   * @return
+   */
+  @PutMapping(value = "{location}/{rule}/edit")
   @ResponseBody
-  public String saveRule(@PathVariable String rule, @RequestBody NginxLocation location, Model model){
+  public String saveRule(@PathVariable("location") String oldLocation,
+                         @PathVariable("rule") String rule, @RequestBody NginxLocation location){
 
     if (!Vali.isFormEpt(rule)){
       rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
     }else{
       rule = location.getPath();
+    }
+
+    if (Vali.isFormEpt(oldLocation)){
+      oldLocation = location.getServer();
     }
 
     NgxConfig conf = NginxUtils.read();
@@ -105,7 +126,7 @@ public class LIsnerRuleController {
     //尝试写入文件
     try {
       //更新Config对象
-      editRuleConf(location, rule, conf);
+      editRuleConf(location, oldLocation, rule, conf);
       //更新配置文件
       NginxUtils.save(conf);
       //尝试重启加载新的配置
@@ -120,24 +141,134 @@ public class LIsnerRuleController {
     return "SUCCESS";
   }
 
+  /**
+   * 删除监听规则
+   * @param rule
+   *      原始规则路径
+   * @param location
+   * @return
+   */
+  @DeleteMapping(value = "{location}/{rule}/edit")
+  @ResponseBody
+  public String delRule(@PathVariable("location") String location,
+                        @PathVariable("rule") String rule){
+    if (!Vali.isFormEpt(location)){
+      location = location.replace("_", ":");
+    }
+    if (!Vali.isFormEpt(rule)){
+      rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
+    }
+    NgxConfig conf = NginxUtils.read();
 
-  private void editRuleConf(NginxLocation location, String oldRule, NgxConfig conf){
+    //备份配置
+    String bakConf = NginxUtils.toString(conf);
+    //尝试写入文件
+    try {
+      //更新Config对象
+      conf = delRuleConf(location, rule, NginxUtils.read());
+      //更新配置文件
+      NginxUtils.save(conf);
+      //尝试重启加载新的配置
+      nginxManager.reload();
+    }catch (Exception e){
+      NginxUtils.save(bakConf);
+      if (e instanceof ValidationException){
+        throw e;
+      }
+      throw new NginxServiceManagerException("已回滚到上次配置:" + e.getMessage(), e);
+    }
+    return "SUCCESS";
+  }
+
+  /**
+   * 删除规则实现
+   * @param location
+   *      所属监听域
+   * @param rule
+   *      规则路径
+   */
+  private NgxConfig delRuleConf(String location, String rule, NgxConfig conf){
+    NgxBlock http = conf.findBlock("http");
+    NgxBlock newHttp = new NgxBlock();
+    newHttp.addValue("http");
+    List<NgxEntry> httpItems = new ArrayList<>(http.getEntries());
+    for (NgxEntry httpItem: httpItems){
+      newHttp.addEntry(httpItem);
+      if (!(httpItem instanceof NgxBlock)){
+        continue;
+      }
+      NgxBlock server = (NgxBlock) httpItem;
+      if (!server.getName().equals("server")){
+        continue;
+      }
+      String hostAndProt = getHostAndProt(server);
+      if (null == hostAndProt){
+        continue;
+      }
+      // 找到块
+      if (hostAndProt.equals(location)){
+        newHttp.remove(server);
+
+        NgxBlock newServer = new NgxBlock();
+        newServer.addValue("server");
+
+        List<NgxEntry> serverItems = new ArrayList<>(server.getEntries());
+        for(NgxEntry serverItem: serverItems){
+          newServer.addEntry(serverItem);
+          if (!(serverItem instanceof NgxBlock)){
+            continue;
+          }
+          NgxBlock locationBlock = (NgxBlock) serverItem;
+          if (locationBlock.getValue().equals(rule)){
+            newServer.remove(locationBlock);
+            continue;
+          }
+        }
+        newHttp.addEntry(newServer);
+      }
+
+      conf.remove(http);
+      conf.addEntry(newHttp);
+    }
+    return conf;
+  }
+
+  private String getHostAndProt(NgxBlock server){
+    //端口
+    NgxParam listen = server.findParam("listen");
+    if (null == listen) {
+      return null;
+    }
+    //域名
+    NgxParam server_name = server.findParam("server_name");
+    if (null == server_name) {
+      return null;
+    }
+    return server_name.getValue().trim() + ":" + listen.getValue().trim();
+  }
+
+  /**
+   * 编辑或新增规则实现
+   * @param location
+   *      新规则实体
+   * @param oldLocation
+   *      所属监听域
+   * @param oldRule
+   *      旧的规则路径
+   * @param conf
+   */
+  private void editRuleConf(NginxLocation location, String oldLocation, String oldRule, NgxConfig conf){
     NgxBlock http = conf.findBlock("http");
     List<NgxEntry> servers = http.findAll(NgxConfig.BLOCK, "server");
     for (NgxEntry enty : servers) {
       NgxBlock ser = (NgxBlock) enty;
       //端口
-      NgxParam listen = ser.findParam("listen");
-      if (null == listen) {
-        continue;
-      }
-      //域名
-      NgxParam server_name = ser.findParam("server_name");
-      if (null == server_name) {
+      String hostAndProt = getHostAndProt(ser);
+      if (null == hostAndProt){
         continue;
       }
       // 找到块
-      if ((server_name.getValue().trim() + ":" + listen.getValue().trim()).equals(location.getServer().trim())){
+      if (hostAndProt.equals(oldLocation)){
 
         NgxBlock updateSer = new NgxBlock();
         updateSer.addValue("server");

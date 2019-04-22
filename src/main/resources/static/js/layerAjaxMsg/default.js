@@ -3,22 +3,25 @@
  */
 //初始化Ajax
 H.errorFun = function(res){
-	var msg;
-	if(res.code == 'NGINX_WORK_EXCEPTION'){
-		msg = "操作失败";
-	}else if(res.code == 'SERVER_ERROR'){
-		msg = "内部错误";
-	}else if(res.code == 'VALI_ERROR'){
-		msg = "参数错误";
-	}else{
-		//msg = "未知错误";
-		if(res.message){
-			layer.msg(res.message);
+	layui.use('form', function() {
+		var layer = layui.layer;
+		var msg;
+		if(res.code == 'NGINX_WORK_EXCEPTION'){
+			msg = "操作失败";
+		}else if(res.code == 'SERVER_ERROR'){
+			msg = "内部错误";
+		}else if(res.code == 'VALI_ERROR'){
+			msg = "参数错误";
 		}else{
-			layer.msg("未知错误");
+			//msg = "未知错误";
+			if(res.message){
+				layer.msg(res.message);
+			}else{
+				layer.msg("未知错误");
+			}
+			return;
 		}
-		return;
-	}
-	msg += "," + res.message;
-	layer.msg(msg);
-}
+		msg += "," + res.message;
+		layer.msg(msg);
+	});
+};
