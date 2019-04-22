@@ -42,6 +42,7 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
         if (!result) {
             res.sendRedirect("/");
         }
+        req.setAttribute("ctx", req.getContextPath());
         return result;
     }
 }

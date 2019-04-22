@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>高级配置</title>
+	<script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<!-- 动画 -->
+	<link rel="stylesheet" href="../../../css/animate.css">
+	<!-- layerUI -->
+	<link rel="stylesheet" href="../../../lib/layui/css/layui.css">
+	<script type="text/javascript" src="../../../lib/layui/layui.js"></script>
+	<!-- font awesome-->
+	<link rel="stylesheet" href="../../../lib/font-awesome/css/font-awesome.min.css">
+	<!--<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>-->
+	<link rel="stylesheet" href="../../../lib/layer-v3.1.1/layer/theme/default/layer.css">
+	<!-- Ajax -->
+	<script type="text/javascript" src="../../../js/ajax/core.js"></script>
+	<script type="text/javascript" src="../../../js/layerAjaxMsg/default.js"></script>
+	<!-- Editor -->
+<!--	<link rel=stylesheet href="${ctx}/codemirror/doc/docs.css">-->
+	<link rel="stylesheet" href="${ctx}/codemirror/lib/codemirror.css">
+	<link rel="stylesheet" href="${ctx}/codemirror/addon/hint/show-hint.css"/>
+<!--	<link rel="stylesheet" href="${ctx}/codemirror/theme/pastel-on-dark.css">-->
+	<script src="${ctx}/codemirror/lib/codemirror.js"></script>
+	<script src="${ctx}/codemirror/mode/nginx/nginx.js"></script>
+	<script src="${ctx}/codemirror/addon/hint/show-hint.js"></script>
+	<script src="${ctx}/codemirror/addon/hint/anyword-hint.js"></script>
+	<script src="${ctx}/codemirror/addon/selection/active-line.js"></script>
+	<style>
+		.CodeMirror {
+			border: 1px solid #eee;
+			height: auto;
+		}
+
+		.CodeMirror-scroll {
+			height: auto;
+			overflow-y: hidden;
+			overflow-x: auto;
+		}
+	</style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout" style="padding:10px;">
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		<legend>Nginx 高级配置</legend>
+	</fieldset>
+	<textarea id="code">${confText!''}</textarea>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		layui.use('layer', function() {
+			var layer = layui.layer;
+			var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+				mode: "text/x-nginx-conf",
+				styleActiveLine: true,
+				lineNumbers: true,
+				lineWrapping: true,
+				extraKeys: {
+					"Ctrl-Enter": "autocomplete",
+					Tab: function (cm) {
+						var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+						cm.replaceSelection(spaces);
+					}
+				}
+			});
+			// editor.setOption("theme", "pastel-on-dark");
+
+			editor.on("keyup", function (cm, event) {
+				if (!cm.state.completionActive &&
+						((event.keyCode >= 65 && event.keyCode <= 90 ) || event.keyCode == 52 || event.keyCode == 219 || event.keyCode == 190)) {
+					CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+				}
+			});
+
+		});
+	});
+
+</script>
+</body>
+</html>
