@@ -93,10 +93,10 @@ public class LIsnerRuleController {
   @ResponseBody
   public String saveRule(@PathVariable String rule, @RequestBody NginxLocation location, Model model){
 
-//    if (Vali.isFormEpt(rule)){
-//      throw new ValidationException("请填写监听规则");
-//    }
-//    rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
+    if (Vali.isFormEpt(rule)){
+      throw new ValidationException("请填写原始监听规则");
+    }
+    rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
 
     NgxConfig conf = NginxUtils.read();
     //备份配置
@@ -104,7 +104,7 @@ public class LIsnerRuleController {
     //尝试写入文件
     try {
       //更新Config对象
-      editRuleConf(location, conf);
+      editRuleConf(location, rule, conf);
       //更新配置文件
       NginxUtils.save(conf);
       //尝试重启加载新的配置
@@ -120,7 +120,7 @@ public class LIsnerRuleController {
   }
 
 
-  private void editRuleConf(NginxLocation location, NgxConfig conf){
+  private void editRuleConf(NginxLocation location, String oldRule, NgxConfig conf){
     NgxBlock http = conf.findBlock("http");
     List<NgxEntry> servers = http.findAll(NgxConfig.BLOCK, "server");
     for (NgxEntry enty : servers) {
@@ -151,7 +151,7 @@ public class LIsnerRuleController {
           }
           NgxBlock locItem = (NgxBlock)e;
           String value = locItem.getValue().trim();
-          if (value.equals(location.getPath())){
+          if (value.equals(oldRule)){
             updateSer.remove(e);
             // TODO 更新
             NgxBlock updateBlock = new NgxBlock();
