@@ -1,5 +1,6 @@
 package com.aiyi.server.manager.nginx.common;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -92,8 +93,23 @@ public class NginxUtils {
 	 * @Creation Date : 2018年2月26日 上午9:59:18
 	 * @Author : 郭胜凯
 	 */
-	public static void check() {
-		// TODO Auto-generated method stub
-		
+	public static void check(String confText) {
+		String confPath = Configer.getNginxConfPath() + ".temp.check";
+		try(FileOutputStream out = new FileOutputStream(confPath)) {
+			out.write(confText.getBytes("UTF-8"));
+			out.flush();
+		} catch (Exception e) {
+			throw new NginxServiceManagerException("Nginx临时配置写入配置");
+		}
+
+		//校验
+		try {
+			String check = CMDUtil.excuse(CommonFields.NGINX + " -t -c " + confPath, Configer.getNginxPath());
+			if (check.indexOf(CommonFields.NGINX  + ": configuration file " + confPath + " test is successful") == -1) {
+				throw new NginxServiceManagerException("Nginx配置文件校验失败:" + check);
+			}
+		}finally {
+			new File(confPath).delete();
+		}
 	}
 }

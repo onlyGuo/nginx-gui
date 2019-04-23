@@ -9,6 +9,7 @@
 	<!-- layerUI -->
 	<link rel="stylesheet" href="../../../lib/layui/css/layui.css">
 	<script type="text/javascript" src="../../../lib/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../lib/layui/font/iconfont.woff"></script>
 	<!-- font awesome-->
 	<link rel="stylesheet" href="../../../lib/font-awesome/css/font-awesome.min.css">
 	<!--<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>-->
@@ -41,9 +42,32 @@
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout" style="padding:10px;">
-	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
 		<legend>Nginx 高级配置</legend>
 	</fieldset>
+	<div class="layui-container" style="width: 98%;">
+		<div class="layui-layer-border" style="background-color: #EEE">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-btn-group">
+						<button class="layui-btn layui-btn-primary" id="checkBtn">
+							<i class="fa fa-check"></i> 检验配置
+						</button>
+					</div>
+				</div>
+				<div class="layui-col-md6" style="text-align: right;">
+					<div class="layui-btn-group">
+						<button class="layui-btn layui-btn-primary" id="saveBtn">
+							<i class="fa fa-save"></i> 保存并热加载
+						</button>
+						<button class="layui-btn layui-btn-primary" id="refreshBtn">
+							<i class="fa fa-refresh"></i> 载入最新配置
+						</button>
+					</div>
+				</div>
+			</div>
+		<div>
+	</div>
 	<textarea id="code">${confText!''}</textarea>
 </div>
 
@@ -73,6 +97,46 @@
 				}
 			});
 
+			$("#checkBtn").click(function(){
+				var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在校验, 请稍后...", {
+					time: 0,
+					shade: 0.3
+				});
+				H.post("conf/check", {conf: editor.getValue()}, function(){
+					layer.msg("<i class='fa fa-check' style='color: #00d95a'></i> 恭喜!校验通过!");
+				}, function (res) {
+					try {
+						var lineIndex = res.message.indexOf(".temp.check:") + 12;
+						var lineNum = res.message.substr(lineIndex);
+						lineNum = lineNum.substr(0, lineNum.indexOf("nginx"));
+						layer.alert("校验失败, 在第: " + lineNum + "行, 报文细节如下:<br/><hr/>" + res.message);
+					}catch (e) {
+						layer.alert("校验失败, 报文细节如下:<br/><hr/>" + res.message);
+					}
+
+				});
+			});
+
+			$("#refreshBtn").click(function(){
+				var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在拉取最新配置, 请稍后...", {
+					time: 0,
+					shade: 0.3
+				});
+				H.getTxt("conf/refresh", {}, function(res){
+					editor.setValue(res);
+					layer.msg("(⊙v⊙)嗯....刷好了");
+				});
+			});
+
+			$("#saveBtn").click(function(){
+				var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在校验, 请稍后...", {
+					time: 0,
+					shade: 0.3
+				});
+				H.put("conf/save", {conf: editor.getValue()}, function(res){
+					layer.msg("保存成功!");
+				});
+			});
 		});
 	});
 
