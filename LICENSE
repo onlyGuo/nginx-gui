@@ -20,11 +20,6 @@ If the authorized individual or organization fails to fulfill any of the above o
 
 The undefined behavior of this license is handled by gpl-3.0. The part of gpl-3.0 that conflicts with this agreement is handled in accordance with this agreement.
 
-
-* Discussion https://github.com/996icu/996.ICU/pull/15642
-* 996 from https://feathub.com/LinXueyuanStdio/996.ICU
-* [1]: blacklist https://github.com/996icu/996.ICU/blob/master/blacklist/blacklist.md
-
 gpl-3.0
 --------------------------------------------------------------------------------
 
