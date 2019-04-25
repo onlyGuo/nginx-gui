@@ -69,7 +69,8 @@ public class NginxManager {
     new Thread(new Runnable() {
       @Override
       public void run() {
-        String excuse = CMDUtil.excuse(CommonFields.NGINX + " -c " + Configer.getNginxConfPath(), Configer.getNginxPath()); 
+        String excuse = CMDUtil.excuse(CommonFields.NGINX + " -c " + Configer.getNginxConfPath()
+                .replace(" ", "\" \""), Configer.getNginxPath());
         if (!"".equals(excuse.trim())) {
           throw new NginxServiceManagerException("Nginx启动异常:" + excuse);
         }

@@ -3,6 +3,7 @@ package com.aiyi.server.manager.nginx.utils;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 
@@ -22,24 +23,15 @@ public class PropsUtils {
    */
   public static String get(String key) {
     String property = System.getProperty("user.dir");
-    FileInputStream fileInputStream = null;
-    try {
+    try (FileInputStream fileInputStream = new FileInputStream(property + "/conf.properties");
+         InputStreamReader reader = new InputStreamReader(fileInputStream, "UTF-8")){
       if(null == prop) {
         prop = new Properties();
-        fileInputStream = new FileInputStream(property + "/conf.properties");
-        prop.load(fileInputStream);
+        prop.load(reader);
       }
      return prop.getProperty(key);
     } catch (IOException e) {
       e.printStackTrace();
-    }finally {
-      try {
-        if (fileInputStream != null) {
-          fileInputStream.close();
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
     return null;
   }
