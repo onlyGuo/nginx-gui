@@ -12,7 +12,19 @@
   </a>
 </p>
 
-## How to use?
+## Download
+### Builder release-1.0
+- [Nginx-GUI-For-Mac-1.0.zip](http://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Mac-1.0.zip) 
+- [Nginx-GUI-For-Linux-1.0.zip](http://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux-1.0.zip) 
+- [Nginx-GUI-For-Windows-1.0.zip](http://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Windows-1.0.zip) 
+
+## Quick start
+1. Download the release package.
+2. Unzip pachage to your {dir}.
+3. Edit the {dir}/conf/conf.properties, set your nginx path.
+4. Run {dir}/startup.sh or {dir}/startup.bat
+
+## How to use source code?
 
 1. If your system is Mac os or idea, please copy "conf.properties" to parent directory。
 
