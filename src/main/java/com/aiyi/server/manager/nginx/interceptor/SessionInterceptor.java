@@ -1,14 +1,17 @@
 package com.aiyi.server.manager.nginx.interceptor;
 
+import com.aiyi.server.manager.nginx.annotation.NoHandlerLogger;
 import com.aiyi.server.manager.nginx.common.CommonFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 /**
  * Session控制拦截器
@@ -28,10 +31,12 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler)
             throws Exception {
         if (handler instanceof ResourceHttpRequestHandler) {
-            log.info("---------ResourceHttpRequestHandler-------{}------------", handler.toString());
+            log.debug("ResourceHttpRequestHandler-------{}------------", handler.toString());
             return true;
         } else if (handler instanceof HandlerMethod) {
-            log.info("--------HandlerMethod--------{}------------", handler.toString());
+            if (((HandlerMethod) handler).getMethod().getAnnotation(NoHandlerLogger.class) == null){
+                log.info("HandlerMethod--------{}------------", handler.toString());
+            }
         } else {
             log.info("--------unknown handler--------{}------------", handler.toString());
         }

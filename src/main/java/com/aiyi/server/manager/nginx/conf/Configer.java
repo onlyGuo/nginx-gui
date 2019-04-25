@@ -19,7 +19,7 @@ public class Configer {
   private static String NginxPath = null;
   
   private static String NginxConfPath = null;
-  
+
   /**
    * 获得Nginx所在的路径
    * @Description : 
@@ -31,7 +31,7 @@ public class Configer {
     if (null == NginxPath) {
       String string = PropsUtils.get(CommonFields.PATH.PATH_NGINX);
       if (null == string || "".equals(string.trim())) {
-        string = System.getProperty("user.dir") + "/nginx";
+        string = System.getProperty("conf.dir") + "/nginx";
       }
       NginxPath = string;
     }

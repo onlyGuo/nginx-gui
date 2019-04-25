@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.aiyi.server.manager.nginx.annotation.NoHandlerLogger;
 import com.aiyi.server.manager.nginx.bean.DiskInfo;
 import com.aiyi.server.manager.nginx.bean.MemoryBean;
 import com.aiyi.server.manager.nginx.bean.result.Result;
@@ -133,6 +134,7 @@ public class SysController {
 	 */
 	@RequestMapping(value = "cpuUsedPerc", method = RequestMethod.GET)
 	@ResponseBody
+	@NoHandlerLogger
 	public int cpuUsedPerc() {
 	  return SystemUtils.getCpuUsedPerc();
 	}
@@ -146,6 +148,7 @@ public class SysController {
      */
     @RequestMapping(value = "memoryUsedPerc", method = RequestMethod.GET)
     @ResponseBody
+	@NoHandlerLogger
     public List<String> memoryUsedPerc() {
       List<String> y = new ArrayList<>();
       List<MemoryBean> alwaysMemory = memoryLisner.getAlwaysMemory();

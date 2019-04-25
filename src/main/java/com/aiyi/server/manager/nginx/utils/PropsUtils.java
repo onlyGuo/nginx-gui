@@ -15,6 +15,28 @@ import java.util.Properties;
 public class PropsUtils {
 
   private static Properties prop = null;
+
+  static {
+    String confDir = System.getProperty("conf.dir");
+    if (null == confDir){
+      System.setProperty("conf.dir", System.getProperty("user.dir"));
+    }
+  }
+
+  /**
+   * 从注入参数中设置系统变量
+   * @param args
+   */
+  public static void setSysPropByArgs(String[] args){
+    if (null != args && args.length > 0){
+      for (String arg: args){
+        if (arg.contains("=")){
+          String[] conf = arg.split("=");
+          System.setProperty(conf[0], conf[1]);
+        }
+      }
+    }
+  }
   
   /**
    * 获得配置值
@@ -22,7 +44,7 @@ public class PropsUtils {
    * @return
    */
   public static String get(String key) {
-    String property = System.getProperty("user.dir");
+    String property = System.getProperty("conf.dir");
     try (FileInputStream fileInputStream = new FileInputStream(property + "/conf.properties");
          InputStreamReader reader = new InputStreamReader(fileInputStream, "UTF-8")){
       if(null == prop) {
@@ -37,7 +59,7 @@ public class PropsUtils {
   }
   
   public static void set(String key, String value) {
-    String property = System.getProperty("user.dir");
+    String property = System.getProperty("conf.dir");
     FileOutputStream out = null;
     if (null == prop) {
       get("default");
