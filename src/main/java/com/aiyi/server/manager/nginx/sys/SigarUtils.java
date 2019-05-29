@@ -3,6 +3,8 @@ package com.aiyi.server.manager.nginx.sys;
 import com.aiyi.server.manager.nginx.bean.DiskInfo;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,22 +15,18 @@ import java.util.MissingResourceException;
 
 public class SigarUtils {
     public final static Sigar sigar = initSigar();
-
+    protected static Logger logger = LoggerFactory.getLogger(SigarUtils.class);
     private static Sigar initSigar() {
         // 寻找 classpath 根目录下的 sigar 文件夹
-        URL sigarURL = SigarUtils.class.getResource("/sigarLibs");
-        if (null == sigarURL) {
-            // 找不到抛异常
-            throw new MissingResourceException("miss classpath:/sigar folder", SigarUtils.class.getName(), "classpath:/sigar");
-        }
-        File classPath = new File(sigarURL.getFile());
+        String userDir = System.getProperty("user.dir");
+        File classPath = new File(userDir + "/sigarLibs");
         try {
             // 追加库路径
             String sigarLibsPath = classPath.getCanonicalPath();
 
             System.setProperty("org.hyperic.sigar.path", sigarLibsPath);
         } catch (IOException e) {
-            // logger.error("append sigar to java.library.path error", e);
+             logger.error("append sigar to java.library.path error", e);
         }
         return new Sigar();
     }
