@@ -76,9 +76,8 @@ public class HighManagerController {
         } catch (Exception e) {
             //恢复到上一次配置
             NginxUtils.save(backConf);
-            throw new ValidationException("已取消保存操作:" + e.getMessage());
+            throw new ValidationException("已取消保存操作:" + e.getMessage(), e);
         }
         return "SUCCESS";
     }
-
 }

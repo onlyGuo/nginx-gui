@@ -28,8 +28,13 @@ public class CMDUtil {
         exc += "cmd /c ";
         encode = "GBK";
       }else {
-    	  	src = repertory + "/bin/" + src;
-    	  	repertory = null;
+        if (new File(repertory, "bin").exists()) {
+          src = repertory + "/bin/" + src;
+        }
+        if (new File(repertory, "sbin").exists()){
+          src = repertory + "/sbin/" + src;
+        }
+        repertory = null;
       }
       Runtime runtime = Runtime.getRuntime();
       Process pro = null;
