@@ -13,10 +13,11 @@
 </p>
 
 ## Download
-### Builder release-1.0
-- [Nginx-GUI-For-Mac-1.0.zip](http://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Mac-1.0.zip) 
-- [Nginx-GUI-For-Linux-1.0.zip](http://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux-1.0.zip) (这个包有个BUG, 解压并配置好conf.properties后, 将lib/bin/java_vms重命名为java_vms_nginx_gui即可. 另外, 这是64位版本, 32位系统请下载jdk1.8 X86, 解压jdk包, 将jre/lib和jre/bin这两个目录替换Nginx-GUI-For-Linux-1.0/lib路径下的两个目录, 再执行这个命令: `cp lib/bin/java lib/bin/java_vms_nginx_gui`即可)
-- [Nginx-GUI-For-Windows-1.0.zip](http://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Windows-1.0.zip) 
+### Builder release-1.1
+- [Nginx-GUI-For-Mac-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Mac%20v1.1.zip) 
+- [Nginx-GUI-For-Linux-x64-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20X64%20v1.1.zip)
+- [Nginx-GUI-For-Linux-x86-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20x86%20v1.1.zip)
+- [Nginx-GUI-For-Windows-x64-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Windows%20x64%20v1.1.zip) 
 
 ## Quick start
 1. Download the release package.
