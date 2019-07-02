@@ -91,6 +91,10 @@
 			if(pathId){
 				name = "编辑规则";
 			}
+			if (!serv){
+				serv = "null_null";
+				pathId = "Lw==";
+			}
 			H.getTxt("../rule/" + serv.replace(":", "_") + "/" + pathId + "/edit", function(html){
 				layui.use('form', function() {
 					var layer = layui.layer;
@@ -127,7 +131,7 @@
 								time: 0,
 								shade: 0.3
 							});
-							H.put("../rule/" + pathId + "/edit", data, function(res){
+							H.put("../rule/" + serv.replace(":", "_") + "/" + pathId + "/edit", data, function(res){
 								location = location;
 							});
 

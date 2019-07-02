@@ -207,7 +207,7 @@ public class SystemProcessManager {
       CMDUtil.excuse("taskkill /im " + processName + " -f");
       return;
     }
-    if (SystemUtils.isLinux()) {
+    if (SystemUtils.isLinux() || SystemUtils.isMacOs()) {
       CMDUtil.excuse("pkill -9 " + processName);
     }
   }

@@ -56,6 +56,11 @@ public class SystemUtils {
     String osName = getOsName();
     return (osName.toUpperCase().indexOf("LINUX") != -1);
   }
+
+  public static boolean isMacOs(){
+      String osName = getOsName();
+      return (osName.toUpperCase().indexOf("MAC") != -1);
+  }
   
   /**
    * 获得当前系统名称

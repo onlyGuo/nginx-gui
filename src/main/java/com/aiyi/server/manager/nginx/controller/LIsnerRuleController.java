@@ -63,7 +63,6 @@ public class LIsnerRuleController {
     return tableDate;
   }
 
-
   /**
    * @param rule  要编辑的规则
    * @param model 视图封装
@@ -79,6 +78,11 @@ public class LIsnerRuleController {
     if (!Vali.isFormEpt(location)){
       location = location.replace("_", ":");
     }
+
+    model.addAttribute("location", new NginxLocation());
+    model.addAttribute("nginxUpstreams", new NginxUpstream());
+    model.addAttribute("nginxServers", new NginxServer());
+
     List<NginxLocation> nginxLocations = listRules(NginxUtils.read(), null, rule, null);
     if (!nginxLocations.isEmpty()){
       for (NginxLocation locationItem: nginxLocations){
@@ -126,7 +130,7 @@ public class LIsnerRuleController {
     //尝试写入文件
     try {
       //更新Config对象
-      editRuleConf(location, oldLocation, rule, conf);
+      editRuleConf(location, oldLocation.replace("_", ":"), rule, conf);
       //更新配置文件
       NginxUtils.save(conf);
       //尝试重启加载新的配置

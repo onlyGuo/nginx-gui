@@ -50,7 +50,7 @@ public class NginxManager {
     String excuse = CMDUtil.excuse(CommonFields.NGINX + " -s stop", Configer.getNginxPath());
     if (!"".equals(excuse.trim())) {
       logger.error("Nginx服务停止失败:" + excuse + ";尝试强制结束");
-      SystemProcessManager.kill(CommonFields.NGINX);;
+      SystemProcessManager.kill(CommonFields.NGINX);
       logger.info("Nginx服务已强制结束");
     }
   }
