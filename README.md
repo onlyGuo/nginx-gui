@@ -14,6 +14,7 @@
 
 ## Download
 ### Builder release-1.1
+(高速流量成本很大, 如果您下载了release包并且使用过程中感觉还不错, 请加一下⭐️谢谢.)
 - [Nginx-GUI-For-Mac-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Mac%20v1.1.zip) 
 - [Nginx-GUI-For-Linux-x64-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20X64%20v1.1.zip)
 - [Nginx-GUI-For-Linux-x86-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20x86%20v1.1.zip)
