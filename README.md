@@ -20,7 +20,8 @@
 - [Nginx-GUI-For-Linux-x64-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20X64%20v1.1.zip)
 - [Nginx-GUI-For-Linux-x86-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20x86%20v1.1.zip)
 - [Nginx-GUI-For-Windows-x64-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Windows%20x64%20v1.1.zip) 
-
+<br/>
+如果无法启动, 请检查程序目录中是否有中文或空格. (If you can't start, check if there are any Chinese or blanks in the program directory)
 ## Quick start
 1. Download the release package.
 2. Unzip pachage to your {dir}.
