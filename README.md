@@ -14,13 +14,7 @@
 
 ## Download
 ### Builder release-1.1
-高速流量成本很大, 如果您下载了release包并且使用过程中感觉还不错, 请加一下⭐️谢谢.
-(This download link costs a lot of traffic. If you download it later and meet your needs, please star this project. thank you!)
-- [Nginx-GUI-For-Mac-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Mac%20v1.1.zip) 
-- [Nginx-GUI-For-Linux-x64-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20X64%20v1.1.zip)
-- [Nginx-GUI-For-Linux-x86-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Linux%20x86%20v1.1.zip)
-- [Nginx-GUI-For-Windows-x64-1.1.zip](https://aiyiupload.oss-cn-beijing.aliyuncs.com/blog/file/nginxgui/Nginx-GUI-For-Windows%20x64%20v1.1.zip) 
-> 如果无法启动, 请检查程序目录中是否有中文或空格. (If you can't start, check if there are any Chinese or blanks in the program directory)
+If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.1) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.1](https://github.com/onlyGuo/nginx-gui/releases/tag/1.1)
 
 ## Quick start
 1. Download the release package.
