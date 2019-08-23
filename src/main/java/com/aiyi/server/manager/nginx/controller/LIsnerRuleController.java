@@ -330,7 +330,7 @@ public class LIsnerRuleController {
                             NgxEntry next = iterator.next();
                             if (next instanceof NgxParam) {
                                 NgxParam param = ((NgxParam) next);
-                                if (param.getName().equals("proxy_set_header")) {
+                                if ("proxy_set_header".equals(param.getName())) {
                                     if (!hasHeader(proxySetHeader, param)) {
                                         iterator.remove();
                                     }

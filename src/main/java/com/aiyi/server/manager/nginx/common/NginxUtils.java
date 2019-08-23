@@ -50,7 +50,7 @@ public class NginxUtils {
 			out.write(s.getBytes("UTF-8"));
 			out.flush();
 		} catch (Exception e) {
-			throw new NginxServiceManagerException("Nginx配置文件写入失败");
+			throw new NginxServiceManagerException("Nginx配置文件写入失败:" + e.getMessage(), e);
 		}
 	}
 	
@@ -82,7 +82,7 @@ public class NginxUtils {
 			out.write(conf.getBytes("UTF-8"));
 			out.flush();
 		} catch (Exception e) {
-			throw new NginxServiceManagerException("Nginx配置文件写入失败");
+			throw new NginxServiceManagerException("Nginx配置文件写入失败:" + e.getMessage(), e);
 		}
 	}
 	
@@ -99,7 +99,7 @@ public class NginxUtils {
 			out.write(confText.getBytes("UTF-8"));
 			out.flush();
 		} catch (Exception e) {
-			throw new NginxServiceManagerException("Nginx临时配置写入配置");
+			throw new NginxServiceManagerException("Nginx临时配置写入配置失败:" + e.getMessage(), e);
 		}
 
 		//校验

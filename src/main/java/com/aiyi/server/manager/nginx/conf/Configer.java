@@ -57,6 +57,14 @@ public class Configer {
                 NginxConfPath = string;
             }
         }
+        if (NginxConfPath.contains(" ")){
+            if (!NginxConfPath.startsWith("\"")){
+                NginxConfPath = "\"" + NginxConfPath;
+            }
+            if (!NginxConfPath.endsWith("\"")){
+                NginxConfPath += "\"";
+            }
+        }
         return NginxConfPath;
     }
 
