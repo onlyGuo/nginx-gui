@@ -314,10 +314,9 @@ public class LIsnerRuleController {
                         }
 
                         // 索引文件
-                        NgxParam root = new NgxParam();
                         if (!Vali.isEpt(location.getIndex())) {
                             NgxParam index = new NgxParam();
-                            root.addValue("index " + location.getIndex().replace(" ", "").replace(",", " "));
+                            index.addValue("index " + location.getIndex().replace(" ", "").replace(",", " "));
                             confs = setNgxParam(confs, index, "index");
                         }
 
