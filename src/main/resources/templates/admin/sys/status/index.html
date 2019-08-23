@@ -58,46 +58,49 @@
 	</fieldset>
 	<div class="layui-row animated fadeInUp">
 		<#list diskInfos as diskInfo>
-			<div class="layui-col-xs4" id="diskLisner_${diskInfo.name}" style="height:300px;"></div>
-			<script type="text/javascript">
-				var diskLisner_${diskInfo.name} = echarts.init(document.getElementById('diskLisner_${diskInfo.name}'),'macarons');
-				var option_${diskInfo.name} = {
-					title : {
-				        text: '"${diskInfo.name}"磁盘详情',
-				        x:'center'
-				    },
-				    tooltip : {
-				        trigger: 'item',
-				        formatter: "{a} <br/>{b} : {c} ({d}%)"
-				    },
-				    legend: {
-				        orient: 'vertical',
-				        left: 'left',
-				        data: ['已用容量','可用容量']
-				    },
-				    series : [
-				        {
-				            name: ['使用比例'],
-				            type: 'pie',
-				            data:[
-				                {value:${diskInfo.usage.used?c}, name:'已用容量'},
-				                {value:${diskInfo.usage.avail?c}, name:'可用容量'}
-				            ],
-				            itemStyle: {
-				                emphasis: {
-				                    shadowBlur: 10,
-				                    shadowOffsetX: 0,
-				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-				                }
-				            }
-				        }
-				    ]
-				};
-				diskLisner_${diskInfo.name}.setOption(option_${diskInfo.name}, true);
-			</script>
+			<#if diskInfo.usage??>
+				<div class="layui-col-xs4" id="diskLisner_${diskInfo.name}" style="height:300px;"></div>
+					<script type="text/javascript">
+						var diskLisner_${diskInfo.name} = echarts.init(document.getElementById('diskLisner_${diskInfo.name}'),'macarons');
+						var option_${diskInfo.name} = {
+							title : {
+								text: '"${diskInfo.name}"磁盘详情',
+								x:'center'
+							},
+							tooltip : {
+								trigger: 'item',
+								formatter: "{a} <br/>{b} : {c} ({d}%)"
+							},
+							legend: {
+								orient: 'vertical',
+								left: 'left',
+								data: ['已用容量','可用容量']
+							},
+							series : [
+								{
+									name: ['使用比例'],
+									type: 'pie',
+									data:[
+										{value:${diskInfo.usage.used?c}, name:'已用容量'},
+										{value:${diskInfo.usage.avail?c}, name:'可用容量'}
+									],
+									itemStyle: {
+										emphasis: {
+											shadowBlur: 10,
+											shadowOffsetX: 0,
+											shadowColor: 'rgba(0, 0, 0, 0.5)'
+										}
+									}
+								}
+							]
+						};
+						diskLisner_${diskInfo.name}.setOption(option_${diskInfo.name}, true);
+					</script>
+				</div>
+			</#if>
 		</#list>
 		
-	</div>
+
 	
 	<script type="text/javascript">
 		
