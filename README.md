@@ -14,7 +14,7 @@
 
 ## Download
 ### Builder release-1.3
-If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.3) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.2](https://github.com/onlyGuo/nginx-gui/releases/tag/1.3)
+If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.3) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.3](https://github.com/onlyGuo/nginx-gui/releases/tag/1.3)
 
 ## Quick start
 1. Download the release package.
