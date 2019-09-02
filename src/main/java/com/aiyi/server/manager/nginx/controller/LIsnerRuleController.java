@@ -119,7 +119,7 @@ public class LIsnerRuleController {
             rule = location.getPath();
         }
 
-        if (Vali.isFormEpt(oldLocation)) {
+        if (Vali.isFormEpt(oldLocation) || "null_null".equalsIgnoreCase(oldLocation)) {
             oldLocation = location.getServer();
         }
 
