@@ -13,8 +13,8 @@
 </p>
 
 ## Download
-### Builder release-1.3
-If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.3) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.3](https://github.com/onlyGuo/nginx-gui/releases/tag/1.3)
+### Builder release-1.4
+If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.4) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.4](https://github.com/onlyGuo/nginx-gui/releases/tag/1.4)
 
 ## Quick start
 1. Download the release package.
