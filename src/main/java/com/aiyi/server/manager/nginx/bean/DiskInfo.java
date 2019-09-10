@@ -1,8 +1,5 @@
 package com.aiyi.server.manager.nginx.bean;
 
-import org.hyperic.sigar.FileSystem;
-import org.hyperic.sigar.FileSystemUsage;
-
 /**
  * 磁盘信息
  * @Project : nginx
@@ -15,7 +12,7 @@ import org.hyperic.sigar.FileSystemUsage;
  */
 public class DiskInfo {
 
-  private FileSystem fileSystem;
+  private String devName;
   
   private FileSystemUsage usage;
   
@@ -31,12 +28,12 @@ public class DiskInfo {
     this.type = type;
   }
 
-  public FileSystem getFileSystem() {
-    return fileSystem;
+  public String getDevName() {
+    return devName;
   }
 
-  public void setFileSystem(FileSystem fileSystem) {
-    this.fileSystem = fileSystem;
+  public void setDevName(String devName) {
+    this.devName = devName;
   }
 
   public FileSystemUsage getUsage() {
@@ -49,10 +46,9 @@ public class DiskInfo {
 
   public String getName() {
     if (null != name) {
-      name = name.replace("\\", "_").replace("/", "_").replace(":", "_");
       return name;
     }
-    return fileSystem.getDevName().replace("\\", "_").replace("/", "_").replace(":", "_");
+    return devName;
   }
 
   public void setName(String name) {
