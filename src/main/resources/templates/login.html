@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="./css/font.css">
 	<link rel="stylesheet" href="./css/xadmin.css">
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="/js/xadmin.js"></script>
 
@@ -26,7 +26,7 @@
             <hr class="hr15">
             <input name="password" placeholder="密码"  type="password" class="layui-input">
             <hr class="hr15">
-            <button class="layui-btn" style="width: 100%;font-size: 18px;line-height: 24px;height: 45px;" type="button">登录</button>
+            <button class="layui-btn" style="width: 100%;font-size: 18px;line-height: 24px;height: 45px;" type="submit">登录</button>
             <hr class="hr20" >
         </form>
     </div>
@@ -34,18 +34,18 @@
 	<script type="text/javascript" src="/js/ajax/core.js"></script>
 	<script type="text/javascript" src="/js/layerAjaxMsg/default.js"></script>
     <script>
-    
-    	$(function(){
-    		$(".layui-form .layui-btn").click(function(){
-    			var param = {
-    					username:$(".layui-form input[name='username']").val(),
-    					password:$(".layui-form input[name='password']").val()
-    			};
-        		H.post("login", param, function(){
-        			location.href = "/admin/";
-        		});
-        	});
-    	});
+        $(function () {
+            $(".layui-form").submit(function () {
+                var param = {
+                    username: $(".layui-form input[name='username']").val(),
+                    password: $(".layui-form input[name='password']").val()
+                };
+                H.post("login", param, function () {
+                    location.href = "/admin/";
+                });
+                return false;
+            });
+        });
     </script>
 </body>
 </html>
