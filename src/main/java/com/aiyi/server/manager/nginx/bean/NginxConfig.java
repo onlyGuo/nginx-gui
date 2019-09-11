@@ -3,6 +3,7 @@ package com.aiyi.server.manager.nginx.bean;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -174,7 +175,7 @@ public class NginxConfig {
   public static NginxConfig read(File file) {
     StringBuffer sBuffer = new StringBuffer();
     byte[] temp = new byte[1024];
-    try(FileInputStream in = new FileInputStream(file);) {
+    try(FileInputStream in = new FileInputStream(file)) {
       for(int i = in.read(temp); i > 0; i = in.read(temp)) {
         sBuffer.append(new String(temp, 0, i));
       }
@@ -183,7 +184,7 @@ public class NginxConfig {
     }
     NginxConfig read = read(sBuffer.toString(), 0);
     try(FileOutputStream out = new FileOutputStream(file)) {
-      out.write(read.getContent().getBytes("UTF-8"));
+      out.write(read.getContent().getBytes(StandardCharsets.UTF_8));
       out.flush();
     } catch (Exception e) {
       throw new NginxServiceManagerException("配置文件更新失败", e);

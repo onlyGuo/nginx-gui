@@ -61,7 +61,7 @@ public class SystemProcessManager {
         String[] lines = processStr.split(System.getProperty("line.separator"));
         for (String line : lines) {
             line = line.trim();
-            if ("".equals(line) || !line.substring(line.length() - 1, line.length()).equals("K")) {
+            if ("".equals(line) || !line.substring(line.length() - 1).equals("K")) {
                 continue;
             }
             String name = "";

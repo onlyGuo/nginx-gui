@@ -105,14 +105,6 @@
 			series : series
 		};
 		diskLisner_12.setOption(option_12, true);
-		$(window).resize(function() {
-			diskLisner_12.resize();
-		});
-	</script>
-
-
-
-	<script type="text/javascript">
 
 		//CPU
 		var cpuChart = echarts.init(document.getElementById('cpuLisner'),'macarons');
@@ -208,6 +200,11 @@
 			});
 		}
 		memoryChart.setOption(memoryOption, true);
+		$(window).resize(function() {
+			diskLisner_12.resize();
+			cpuChart.resize();
+			memoryChart.resize();
+		});
 		//为了整体效率，异步获得Nginx的运行状态
 		var $reloadBtn = $("#reloadBtn");
 		$reloadBtn.addClass("dis");

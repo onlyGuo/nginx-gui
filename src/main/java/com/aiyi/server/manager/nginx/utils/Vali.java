@@ -21,7 +21,7 @@ public class Vali {
 						field.getType().getSimpleName().equals(Boolean.TYPE.getSimpleName())) {
 					get = "is";
 				}
-				String name = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1, field.getName().length());
+				String name = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 				
 				Method method = classes.getMethod(get + name);
 				Object invoke = method.invoke(obj);
