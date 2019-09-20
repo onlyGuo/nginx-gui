@@ -3,6 +3,7 @@ package com.aiyi.server.manager.nginx.common;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import com.aiyi.server.manager.nginx.conf.Configer;
 import com.aiyi.server.manager.nginx.exception.NginxServiceManagerException;
@@ -47,7 +48,7 @@ public class NginxUtils {
 	public static void save(NgxConfig conf) {
 		try(FileOutputStream out = new FileOutputStream(Configer.getNginxConfPath())) {
 			String s = toString(conf);
-			out.write(s.getBytes("UTF-8"));
+			out.write(s.getBytes(StandardCharsets.UTF_8));
 			out.flush();
 		} catch (Exception e) {
 			throw new NginxServiceManagerException("Nginx配置文件写入失败:" + e.getMessage(), e);
@@ -79,7 +80,7 @@ public class NginxUtils {
 	 */
 	public static void save(String conf) {
 		try(FileOutputStream out = new FileOutputStream(Configer.getNginxConfPath())) {
-			out.write(conf.getBytes("UTF-8"));
+			out.write(conf.getBytes(StandardCharsets.UTF_8));
 			out.flush();
 		} catch (Exception e) {
 			throw new NginxServiceManagerException("Nginx配置文件写入失败:" + e.getMessage(), e);
@@ -96,7 +97,7 @@ public class NginxUtils {
 	public static void check(String confText) {
 		String confPath = Configer.getNginxConfPath() + ".temp.check";
 		try(FileOutputStream out = new FileOutputStream(confPath)) {
-			out.write(confText.getBytes("UTF-8"));
+			out.write(confText.getBytes(StandardCharsets.UTF_8));
 			out.flush();
 		} catch (Exception e) {
 			throw new NginxServiceManagerException("Nginx临时配置写入配置失败:" + e.getMessage(), e);

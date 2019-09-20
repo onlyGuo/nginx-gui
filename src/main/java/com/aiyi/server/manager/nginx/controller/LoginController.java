@@ -52,4 +52,10 @@ public class LoginController {
         result.setSuccess(true);
         return result;
     }
+
+    @RequestMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(CommonFields.SESSION_KEY.LOGIN_USER);
+        return "redirect:/";
+    }
 }

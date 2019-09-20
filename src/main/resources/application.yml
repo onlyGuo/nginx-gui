@@ -6,6 +6,3 @@ spring:
     cache: false
   application:
     name: nginx
-
-page-store: 
-  location: D:\store

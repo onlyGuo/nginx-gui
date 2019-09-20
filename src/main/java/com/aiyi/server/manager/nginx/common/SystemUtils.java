@@ -1,8 +1,8 @@
 package com.aiyi.server.manager.nginx.common;
 
-import org.hyperic.sigar.SigarException;
+import com.sun.management.OperatingSystemMXBean;
 
-import com.aiyi.server.manager.nginx.sys.SigarUtils;
+import java.lang.management.ManagementFactory;
 
 /**
  * 系统工具类
@@ -89,14 +89,10 @@ public class SystemUtils {
      * @Author : 郭胜凯
      */
     public static int getCpuUsedPerc() {
+        OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         if (System.currentTimeMillis() > CPU_GET_TIME + CPU_USED_PERC_CHE_TIME) {
-            Double use;
-            try {
-                use = SigarUtils.sigar.getCpuPerc().getCombined() * 100;
-                CPU_USED_PERC = use.intValue();
-            } catch (SigarException e) {
-                e.printStackTrace();
-            }
+            double use = osmxb.getSystemCpuLoad() * 100;
+            CPU_USED_PERC = (int) use;
         }
         return CPU_USED_PERC;
     }

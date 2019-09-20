@@ -36,7 +36,7 @@
 			            <label class="layui-form-label">节点地址</label>
 			            <div class="layui-input-block">
 			                <input type="text" name="host" placeholder="请输入节点地址,含端口" value="${nodeItem.address!''}" class="layui-input" style="width:300px; display: inline-block;">
-			                <input type="number" name="weight" placeholder="节点权重" value="${nodeItem.weight!''}" class="layui-input"  style="width:100px; display: inline-block;"">
+			                <input type="number" name="weight" placeholder="节点权重" value="${nodeItem.weight!''}" class="layui-input"  style="width:100px; display: inline-block;">
 			                <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
 			            </div>
 			        </div>
@@ -46,13 +46,13 @@
 		            <label class="layui-form-label">节点地址</label>
 		            <div class="layui-input-block">
 		                <input type="text" name="host" placeholder="请输入节点地址,含端口" class="layui-input" style="width:300px; display: inline-block;">
-		                <input type="number" name="weight" placeholder="节点权重" class="layui-input"  style="width:100px; display: inline-block;"">
+		                <input type="number" name="weight" placeholder="节点权重" class="layui-input"  style="width:100px; display: inline-block;">
 		                <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
 		            </div>
 		        </div>
 		    </#if>
 		</div>
-		<a id="addNode" style="float: right;" href='javascript:;'><i class='layui-icon'>&#xe654;</i> 添加新节点</a>
+		<a id="addNode" style="float: right;" href="javascript:"><i class='layui-icon'>&#xe654;</i> 添加新节点</a>
     </form>
     
     <script type="text/javascript">
@@ -61,7 +61,7 @@
 	    		       '     <label class="layui-form-label">节点地址</label>' +
 	    		       '     <div class="layui-input-block">' +
 	    		       '         <input type="text" name="host" placeholder="请输入节点地址,含端口" class="layui-input" style="width:300px; display: inline-block;">' +
-	    		       '         <input type="number" name="weight" placeholder="节点权重" class="layui-input"  style="width:100px; display: inline-block;"">' +
+	    		       '         <input type="number" name="weight" placeholder="节点权重" class="layui-input"  style="width:100px; display: inline-block;">' +
 	    		       '         <a class="layui-icon" href="javascript:;" onclick="deleteNode(this);"><i class="layui-icon" style="font-size: 20px;">&#xe640;</i></a>' +
 	    		       '     </div>' +
 	    		       ' </div>';
@@ -74,7 +74,7 @@
     			}
     			console.log(t);
     			var p = $(t).parent().parent();
-    			console.log(p)
+    			console.log(p);
     			p.remove();
     		}
     		

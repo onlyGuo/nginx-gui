@@ -47,7 +47,7 @@ public class MemoryLisner {
                     //已使用内存
                     long compare = total - free;
                     //百分比
-                    Double compareBili = (Double) (1 - free * 1.0 / total) * 100;
+                    Double compareBili = (1 - free * 1.0 / total) * 100;
                     int bai = compareBili.intValue();
 
                     MemoryBean bean = new MemoryBean();

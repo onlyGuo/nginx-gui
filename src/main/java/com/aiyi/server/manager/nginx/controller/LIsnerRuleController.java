@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.ValidationException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -73,7 +74,7 @@ public class LIsnerRuleController {
     @GetMapping(value = "{location}/{rule}/edit")
     public String editRule(@PathVariable String location, @PathVariable String rule, Model model) {
         if (!Vali.isEpt(rule) || !rule.equals("-")) {
-            rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
+            rule = new String(Base64.getUrlDecoder().decode(rule), StandardCharsets.UTF_8);
         }
         if (!Vali.isFormEpt(location)) {
             location = location.replace("_", ":");
@@ -114,7 +115,7 @@ public class LIsnerRuleController {
                            @PathVariable("rule") String rule, @RequestBody NginxLocation location) {
 
         if (!Vali.isFormEpt(rule)) {
-            rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
+            rule = new String(Base64.getUrlDecoder().decode(rule), StandardCharsets.UTF_8);
         } else {
             rule = location.getPath();
         }
@@ -159,7 +160,7 @@ public class LIsnerRuleController {
             location = location.replace("_", ":");
         }
         if (!Vali.isFormEpt(rule)) {
-            rule = new String(Base64.getUrlDecoder().decode(rule), Charset.forName("UTF-8"));
+            rule = new String(Base64.getUrlDecoder().decode(rule), StandardCharsets.UTF_8);
         }
         NgxConfig conf = NginxUtils.read();
 
@@ -573,7 +574,7 @@ public class LIsnerRuleController {
                     location.setProxySetHeader(proxySetHeader);
                     location.setIndex(index);
                     location.setRoot(root);
-                    location.setPathId(Base64.getUrlEncoder().encodeToString(path.getBytes(Charset.forName("UTF-8"))));
+                    location.setPathId(Base64.getUrlEncoder().encodeToString(path.getBytes(StandardCharsets.UTF_8)));
                     location.setServer(serverName.toString());
                     result.add(location);
                 }

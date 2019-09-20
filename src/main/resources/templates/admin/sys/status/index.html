@@ -29,7 +29,7 @@
 	<blockquote class="layui-elem-quote animated fadeInUp">注意：Mac和部分Linux用户可能会出现Nginx已启动但无法检测到，以及无法绑定80端口的问题。该问题可能由于系统权限导致。<br/>
 		以Mac系统为例，出现该问题时，(方案1)请将本项目使用Maven编译出来，并已sudo权限运行。(方案2)使用sudo权限强制停止Nginx，再用本项目启动。
 	</blockquote>
-	
+
 	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
 	   <legend>Nginx快速管理</legend>
 	</fieldset>
@@ -38,13 +38,13 @@
 			<label class="layui-form-label">Nginx状态</label>
 			<div class="layui-input-block">
 				<span id="loading-span" class="layui-form-label"><i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#x1002;</i>获取中...</span>
-				<input id="nginxSwich" lay-filter="nginxSwich" type="checkbox" <#if nginxStart>checked="checked"</#if> lay-skin="switch" lay-text="ON|OFF">
-				<button id="reloadBtn" style="margin-left:10px;margin-top: 5px; height:30px; line-height:30px; display:none;" class='layui-btn <#if !nginxStart>dis</#if>'><i class='layui-icon'>&#x1002;</i> 重启</button>
+				<input id="nginxSwich" lay-filter="nginxSwich" type="checkbox" ${nginxStart?string("checked=\"checked\"", "")} lay-skin="switch" lay-text="ON|OFF">
+				<button id="reloadBtn" style="margin-left:10px;margin-top: 5px; height:30px; line-height:30px; display:none;" class='layui-btn ${nginxStart?string("", "dis")}'><i class='layui-icon'>&#x1002;</i> 重启</button>
 			</div>
 		</div>
 	</div>
 
-	
+
 	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
 	   <legend>服务器CPU&内存实时动态</legend>
 	</fieldset>
@@ -52,58 +52,60 @@
 		<div class="layui-col-xs6" id="cpuLisner" style="height:300px;"></div>
 	    <div class="layui-col-xs6" id="memoryLisner" style="height:300px;"></div>
 	</div>
-	
+
 	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
 	   <legend>服务器硬盘状态</legend>
 	</fieldset>
 	<div class="layui-row animated fadeInUp">
-		<#list diskInfos as diskInfo>
-			<#if diskInfo.usage??>
-				<div class="layui-col-xs4" id="diskLisner_${diskInfo.name}" style="height:300px;"></div>
-					<script type="text/javascript">
-						var diskLisner_${diskInfo.name} = echarts.init(document.getElementById('diskLisner_${diskInfo.name}'),'macarons');
-						var option_${diskInfo.name} = {
-							title : {
-								text: '"${diskInfo.name}"磁盘详情',
-								x:'center'
-							},
-							tooltip : {
-								trigger: 'item',
-								formatter: "{a} <br/>{b} : {c} ({d}%)"
-							},
-							legend: {
-								orient: 'vertical',
-								left: 'left',
-								data: ['已用容量','可用容量']
-							},
-							series : [
-								{
-									name: ['使用比例'],
-									type: 'pie',
-									data:[
-										{value:${diskInfo.usage.used?c}, name:'已用容量'},
-										{value:${diskInfo.usage.avail?c}, name:'可用容量'}
-									],
-									itemStyle: {
-										emphasis: {
-											shadowBlur: 10,
-											shadowOffsetX: 0,
-											shadowColor: 'rgba(0, 0, 0, 0.5)'
-										}
-									}
-								}
-							]
-						};
-						diskLisner_${diskInfo.name}.setOption(option_${diskInfo.name}, true);
-					</script>
-				</div>
-			</#if>
-		</#list>
-		
+		<div class="layui-col-xs12" id="diskLisner_12" style="height:300px;"></div>
+	</div>
 
-	
 	<script type="text/javascript">
-		
+		var titleArr=[];
+		var series=[];
+
+		<#list diskInfos as diskInfo>
+		<#if diskInfo.usage??>
+		titleArr.push({
+			text: '"${diskInfo.name}"磁盘详情',
+			x:'${(diskInfo_index*2+1)*100/(2*diskInfos?size)}%',
+			textAlign: 'center'
+		});
+		series.push({
+			name: ['使用比例'],
+			type: 'pie',
+			//radius: [0, '50%'],
+			center: ['${(diskInfo_index*2+1)*100/(2*diskInfos?size)}%', '50%'],
+			data:[
+				{value:${diskInfo.usage.used?c}, name:'已用容量'},
+				{value:${diskInfo.usage.avail?c}, name:'可用容量'}
+			],
+			itemStyle: {
+				emphasis: {
+					shadowBlur: 10,
+					shadowOffsetX: 0,
+					shadowColor: 'rgba(0, 0, 0, 0.5)'
+				}
+			}
+		});
+		</#if>
+		</#list>
+		var diskLisner_12 = echarts.init(document.getElementById('diskLisner_12'),'macarons');
+		var option_12 = {
+			title : titleArr,
+			tooltip : {
+				trigger: 'item',
+				formatter: "{a} <br/>{b} : {c} ({d}%)"
+			},
+			legend: {
+				orient: 'vertical',
+				left: 'left',
+				data: ['已用容量','可用容量']
+			},
+			series : series
+		};
+		diskLisner_12.setOption(option_12, true);
+
 		//CPU
 		var cpuChart = echarts.init(document.getElementById('cpuLisner'),'macarons');
 		var option = {
@@ -143,10 +145,10 @@
 				}, 1000);
 			});
 		}
-		
+
 
 		var memoryOption = {
-		
+
 		    // Make gradient line here
 		    visualMap: [{
 		        show: false,
@@ -162,7 +164,7 @@
                     }
                 }
             },
-		
+
 		    title: [{
 		        left: 'center',
 		        text: '内存占使用率（MB）实时分析图'
@@ -198,14 +200,20 @@
 			});
 		}
 		memoryChart.setOption(memoryOption, true);
+		$(window).resize(function() {
+			diskLisner_12.resize();
+			cpuChart.resize();
+			memoryChart.resize();
+		});
 		//为了整体效率，异步获得Nginx的运行状态
-		$("#reloadBtn").addClass("dis");
+		var $reloadBtn = $("#reloadBtn");
+		$reloadBtn.addClass("dis");
 		H.get("nginx", function(res){
 			$("#loading-span").css("display", "none");
-			$("#reloadBtn").css("display", "inline-block");
+			$reloadBtn.css("display", "inline-block");
 			if(res.success){
 				if(res.result){
-					$("#reloadBtn").removeClass("dis");
+					$reloadBtn.removeClass("dis");
 					document.getElementById("nginxSwich").checked = "checked";
 				}
 				layui.use('form', function(){
@@ -214,22 +222,22 @@
 					  //开关监听
 					  form.on("switch(nginxSwich)", function(evt){
 					  	var status = evt.elem.checked;
-					  	$("#reloadBtn").addClass("dis");
-					  	$("#reloadBtn").html("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#x1002;</i> 操作中...");
-					  	//var dis = $("#reloadBtn").hasClass("dis");
+					  	$reloadBtn.addClass("dis");
+					  	$reloadBtn.html("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#x1002;</i> 操作中...");
+					  	//var dis = $reloadBtn.hasClass("dis");
 					  	H.put("nginx/" + (status? "start" : "stop"), {}, function(res){
 					  		if(status){
-						  		$("#reloadBtn").removeClass("dis");
+						  		$reloadBtn.removeClass("dis");
 						  	}else{
-						  		$("#reloadBtn").addClass("dis");
+						  		$reloadBtn.addClass("dis");
 						  	}
-					  		$("#reloadBtn").html("<i class='layui-icon'>&#x1002;</i> 重启");
+					  		$reloadBtn.html("<i class='layui-icon'>&#x1002;</i> 重启");
 					  	});
 					  });
 				});
-				
+
 				//绑定重启按钮事件
-				$("#reloadBtn").click(function(){
+				$reloadBtn.on("click", function(){
 					var $btn = $(this);
 					$btn.addClass("dis");
 					$btn.html("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#x1002;</i> 操作中...");

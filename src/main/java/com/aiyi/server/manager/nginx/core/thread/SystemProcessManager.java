@@ -1,23 +1,20 @@
 package com.aiyi.server.manager.nginx.core.thread;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.hyperic.sigar.ProcCpu;
-import org.hyperic.sigar.ProcState;
-import org.hyperic.sigar.SigarException;
-import org.hyperic.sigar.cmd.Ps;
 
 import com.aiyi.server.manager.nginx.common.CMDUtil;
 import com.aiyi.server.manager.nginx.common.SystemUtils;
 import com.aiyi.server.manager.nginx.core.thread.en.ProcessType;
-import com.aiyi.server.manager.nginx.sys.SigarUtils;
+import oshi.SystemInfo;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
 
 public class SystemProcessManager {
 
     private static SystemProcessManager manager = new SystemProcessManager();
+
+    private static SystemInfo systemInfo = new SystemInfo();
 
     public static String listProcessStr() {
         if (SystemUtils.isWindows()) {
@@ -44,26 +41,16 @@ public class SystemProcessManager {
 //    return manager.listByLinux();
 //  }
         List<SysProcess> processInfos = new ArrayList<SysProcess>();
-        try {
-            long[] pids = SigarUtils.sigar.getProcList();
-            for (long pid : pids) {
-
-                ProcState prs = SigarUtils.sigar.getProcState(pid);
-                ProcCpu pCpu = new ProcCpu();
-
-                try {
-                    pCpu.gather(SigarUtils.sigar, pid);
-                    SysProcess process = new SysProcess(prs.getName(), pid, ProcessType.Console, 0, 0L);
-                    processInfos.add(process);
-                } catch (Exception e) {
-                    continue;
-                }
-
+        final OSProcess[] processes = systemInfo.getOperatingSystem().getProcesses(0, OperatingSystem.ProcessSort.CPU);
+        for (OSProcess pid : processes) {
+            try {
+                SysProcess process = new SysProcess(pid.getName(), pid.getProcessID(), ProcessType.Console, 0, 0L);
+                processInfos.add(process);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            System.out.println(processInfos);
-        } catch (SigarException e) {
-            e.printStackTrace();
         }
+        System.out.println(processInfos);
         return processInfos;
     }
 
@@ -74,7 +61,7 @@ public class SystemProcessManager {
         String[] lines = processStr.split(System.getProperty("line.separator"));
         for (String line : lines) {
             line = line.trim();
-            if ("".equals(line) || !line.substring(line.length() - 1, line.length()).equals("K")) {
+            if ("".equals(line) || !line.substring(line.length() - 1).equals("K")) {
                 continue;
             }
             String name = "";
