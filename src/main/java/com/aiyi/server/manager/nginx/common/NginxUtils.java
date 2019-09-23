@@ -1,8 +1,6 @@
 package com.aiyi.server.manager.nginx.common;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import com.aiyi.server.manager.nginx.conf.Configer;
@@ -31,8 +29,8 @@ public class NginxUtils {
 	 * @Author : 郭胜凯
 	 */
 	public static NgxConfig read() {
-		try {
-			return NgxConfig.read(Configer.getNginxConfPath());
+		try (InputStream stream = new FileInputStream(Configer.getNginxConfPath())){
+			return NgxConfig.read(stream);
 		} catch (IOException e) {
 			throw new NginxServiceManagerException("读取Nginx配置文件失败");
 		}

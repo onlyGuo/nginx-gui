@@ -156,7 +156,7 @@ public class LisnerController {
 
     public void deleteServerLisner(String nameAndPort, NgxConfig conf) {
         NgxBlock http = conf.findBlock("http");
-        List<NgxEntry> servers = http.findAll(NgxConfig.BLOCK, "server");
+        List<NgxBlock> servers = http.findAll(NgxConfig.BLOCK, "server");
         for (NgxEntry enty : servers) {
             NgxBlock ser = (NgxBlock) enty;
             NgxParam listen = ser.findParam("listen");
@@ -181,7 +181,7 @@ public class LisnerController {
      */
     public void addServerLisner(String nameAndPort, NginxServer server, NgxConfig conf) {
         NgxBlock http = conf.findBlock("http");
-        List<NgxEntry> servers = http.findAll(NgxConfig.BLOCK, "server");
+        List<NgxBlock> servers = http.findAll(NgxConfig.BLOCK, "server");
         NgxBlock serBlock = null;
         for (NgxEntry enty : servers) {
             NgxBlock ser = (NgxBlock) enty;
@@ -313,7 +313,7 @@ public class LisnerController {
      */
     public List<NginxServer> listLisner(NgxConfig conf) {
         List<NginxServer> result = new ArrayList<>();
-        List<NgxEntry> servers = conf.findAll(NgxConfig.BLOCK, "http", "server");
+        List<NgxBlock> servers = conf.findAll(NgxConfig.BLOCK, "http", "server");
         for (NgxEntry enty : servers) {
             NgxBlock server = (NgxBlock) enty;
             NginxServer nginxServer = new NginxServer();
@@ -333,7 +333,7 @@ public class LisnerController {
                 nginxServer.setAccessLog(access_log.getValue());
             }
             //错误页面
-            List<NgxEntry> errorPages = server.findAll(NgxConfig.PARAM, "error_page");
+            List<NgxParam> errorPages = server.findAll(NgxConfig.PARAM, "error_page");
             for (NgxEntry pages : errorPages) {
                 NgxParam error_page = (NgxParam) pages;
                 List<String> values = error_page.getValues();

@@ -260,7 +260,7 @@ public class LIsnerRuleController {
      */
     private void editRuleConf(NginxLocation location, String oldLocation, String oldRule, NgxConfig conf) {
         NgxBlock http = conf.findBlock("http");
-        List<NgxEntry> servers = http.findAll(NgxConfig.BLOCK, "server");
+        List<NgxBlock> servers = http.findAll(NgxConfig.BLOCK, "server");
         for (NgxEntry enty : servers) {
             NgxBlock ser = (NgxBlock) enty;
             //端口
@@ -474,10 +474,10 @@ public class LIsnerRuleController {
         List<NginxLocation> result = new ArrayList<>();
 
         NgxBlock http = conf.findBlock("http");
-        List<NgxEntry> serverList = http.findAll(NgxBlock.class, "server");
+        List<NgxBlock> serverList = http.findAll(NgxBlock.class, "server");
 
         serverList.forEach(e -> {
-            NgxBlock serBlock = (NgxBlock) e;
+            NgxBlock serBlock = e;
             final StringBuffer serverName = new StringBuffer("localhost:8080");
             NgxParam serverNameParam = serBlock.find(NgxParam.class, "server_name");
             if (null != serverNameParam) {
@@ -492,7 +492,7 @@ public class LIsnerRuleController {
             }
 
 
-            List<NgxEntry> locationList = serBlock.findAll(NgxBlock.class, "location");
+            List<NgxBlock> locationList = serBlock.findAll(NgxBlock.class, "location");
             locationList.forEach(l -> {
                 //找到规则块
                 NgxBlock locaBlock = (NgxBlock) l;
@@ -549,7 +549,7 @@ public class LIsnerRuleController {
 
                 // http 头
                 List<NginxProxySetHeader> proxySetHeader = new ArrayList<>();
-                List<NgxEntry> proxySetHeaderList = locaBlock.findAll(NgxParam.class, "proxy_set_header");
+                List<NgxParam> proxySetHeaderList = locaBlock.findAll(NgxParam.class, "proxy_set_header");
 
                 proxySetHeaderList.forEach(h -> {
                     NgxParam proxySetHeaderParam = (NgxParam) h;

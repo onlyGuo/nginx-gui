@@ -119,7 +119,7 @@ public class AgentController {
         NgxConfig conf = NginxUtils.read();
         String backConf = NginxUtils.toString(conf);
         NgxEntry old = null;
-        List<NgxEntry> findAll = conf.findAll(NgxConfig.BLOCK, "http", "upstream");
+        List<NgxBlock> findAll = conf.findAll(NgxConfig.BLOCK, "http", "upstream");
         for (NgxEntry ngxEntry : findAll) {
             //定位负载配置
             if (upstream.getValue().equals(((NgxBlock) ngxEntry).getValue())) {
@@ -153,7 +153,7 @@ public class AgentController {
         }
         NgxConfig conf = NginxUtils.read();
         String backConf = NginxUtils.toString(conf);
-        List<NgxEntry> findAll = conf.findAll(NgxConfig.BLOCK, "http", "upstream");
+        List<NgxBlock> findAll = conf.findAll(NgxConfig.BLOCK, "http", "upstream");
         for (NgxEntry ngxEntry : findAll) {
             //定位负载配置
             if (value.equals(((NgxBlock) ngxEntry).getValue())) {
@@ -292,7 +292,7 @@ public class AgentController {
      * @Author : 郭胜凯
      */
     public List<NginxUpstream> listUpstreams(NgxConfig conf) {
-        List<NgxEntry> findAll = conf.findAll(NgxConfig.BLOCK, "http", "upstream");
+        List<NgxBlock> findAll = conf.findAll(NgxConfig.BLOCK, "http", "upstream");
         List<NginxUpstream> result = new ArrayList<>();
         for (NgxEntry ngxEntry : findAll) {
             NginxUpstream upstream = new NginxUpstream();
