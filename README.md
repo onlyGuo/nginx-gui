@@ -16,6 +16,10 @@
 ### Builder release-1.4
 If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.4) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.4](https://github.com/onlyGuo/nginx-gui/releases/tag/1.4)
 
+## New idea
+If you like algorithms, you can implement them [here](https://github.com/onlyGuo/nginx-conf-analysis).  
+In the future, it will be a nginx configuration file management tool library supporting complete modules and files.
+
 ## Quick start
 1. Download the release package.
 2. Unzip pachage to your {dir}.
