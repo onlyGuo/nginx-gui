@@ -40,9 +40,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.odiszapc</groupId>
-			<artifactId>nginxparser</artifactId>
-			<version>0.9.6</version>
+		    <groupId>com.xishankeji.forks</groupId>
+		    <artifactId>nginxparser</artifactId>
+		    <version>1.1.2</version>
 		</dependency>
 
 		<dependency>
