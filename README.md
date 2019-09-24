@@ -13,8 +13,8 @@
 </p>
 
 ## Download
-### Builder release-1.4
-If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.4) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.4](https://github.com/onlyGuo/nginx-gui/releases/tag/1.4)
+### Builder release-1.5
+If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.5) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.5](https://github.com/onlyGuo/nginx-gui/releases/tag/1.5)
 
 ## New idea
 If you like algorithms, you can implement them [here](https://github.com/onlyGuo/nginx-conf-analysis).  
