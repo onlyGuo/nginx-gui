@@ -40,9 +40,10 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>com.xishankeji.forks</groupId>
-		    <artifactId>nginxparser</artifactId>
-		    <version>1.1.2</version>
+			<!-- 这个库的版本比较乱，慎重升级，后期将会使用新的自写类库(https://github.com/onlyGuo/nginx-conf-analysis) -->
+			<groupId>com.github.odiszapc</groupId>
+			<artifactId>nginxparser</artifactId>
+			<version>0.9.3</version>
 		</dependency>
 
 		<dependency>

@@ -260,7 +260,7 @@ public class LIsnerRuleController {
      */
     private void editRuleConf(NginxLocation location, String oldLocation, String oldRule, NgxConfig conf) {
         NgxBlock http = conf.findBlock("http");
-        List<NgxBlock> servers = http.findAll(NgxConfig.BLOCK, "server");
+        List<NgxEntry> servers = http.findAll(NgxConfig.BLOCK, "server");
         for (NgxEntry enty : servers) {
             NgxBlock ser = (NgxBlock) enty;
             //端口
@@ -277,10 +277,11 @@ public class LIsnerRuleController {
                 isInsert.setSuccess(true);
 
                 // 开始找规则
-                for (NgxEntry e: ser.findAll(NgxEntry.class)){
+                Collection<NgxEntry> entries = ser.getEntries();
+                for (NgxEntry e: entries){
                     updateSer.addEntry(e);
                     if (!(e instanceof NgxBlock)) {
-                        return;
+                        continue;
                     }
                     NgxBlock locItem = (NgxBlock) e;
                     String value = locItem.getValue().trim();
@@ -473,10 +474,10 @@ public class LIsnerRuleController {
         List<NginxLocation> result = new ArrayList<>();
 
         NgxBlock http = conf.findBlock("http");
-        List<NgxBlock> serverList = http.findAll(NgxBlock.class, "server");
+        List<NgxEntry> serverList = http.findAll(NgxBlock.class, "server");
 
         serverList.forEach(e -> {
-            NgxBlock serBlock = e;
+            NgxBlock serBlock = (NgxBlock)e;
             final StringBuffer serverName = new StringBuffer("localhost:8080");
             NgxParam serverNameParam = serBlock.find(NgxParam.class, "server_name");
             if (null != serverNameParam) {
@@ -491,7 +492,7 @@ public class LIsnerRuleController {
             }
 
 
-            List<NgxBlock> locationList = serBlock.findAll(NgxBlock.class, "location");
+            List<NgxEntry> locationList = serBlock.findAll(NgxBlock.class, "location");
             locationList.forEach(l -> {
                 //找到规则块
                 NgxBlock locaBlock = (NgxBlock) l;
@@ -548,7 +549,7 @@ public class LIsnerRuleController {
 
                 // http 头
                 List<NginxProxySetHeader> proxySetHeader = new ArrayList<>();
-                List<NgxParam> proxySetHeaderList = locaBlock.findAll(NgxParam.class, "proxy_set_header");
+                List<NgxEntry> proxySetHeaderList = locaBlock.findAll(NgxParam.class, "proxy_set_header");
 
                 proxySetHeaderList.forEach(h -> {
                     NgxParam proxySetHeaderParam = (NgxParam) h;
