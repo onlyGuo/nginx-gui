@@ -6,3 +6,5 @@ spring:
     cache: false
   application:
     name: nginx
+logging:
+  file: logs/nginx-gui.log
