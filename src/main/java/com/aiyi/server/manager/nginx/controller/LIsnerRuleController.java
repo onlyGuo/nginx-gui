@@ -277,7 +277,7 @@ public class LIsnerRuleController {
                 isInsert.setSuccess(true);
 
                 // 开始找规则
-                ser.forEach(e -> {
+                for (NgxEntry e: ser.findAll(NgxEntry.class)){
                     updateSer.addEntry(e);
                     if (!(e instanceof NgxBlock)) {
                         return;
@@ -352,9 +352,8 @@ public class LIsnerRuleController {
                         updateSer.addEntry(updateBlock);
 
                         isInsert.setSuccess(false);
-
                     }
-                });
+                }
                 // TODO 添加
                 if (isInsert.isSuccess()) {
                     NgxBlock updateBlock = new NgxBlock();
