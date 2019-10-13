@@ -15,6 +15,14 @@
 ## Download
 ### Builder release-1.6
 If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.6](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6)
+### China download node
+这里提供了国内下载节点， 如果您无法通过以上连接下载release包，可以尝试从下方连接下载(但您需要支付流量费用)：
+- [Nginx-GUI-For-Linux_X64_v1.6.zip](http://disk.321aiyi.com/share/b88e02f8aca04cdd8ce3a1fb02499e79)
+- [Nginx-GUI-For-Linux_X86_v1.6.zip](http://disk.321aiyi.com/share/6b945535bfc0437bb2b91ff2fa2f97b1)
+- [Nginx-GUI-For-Mac_v1.6.zip](http://disk.321aiyi.com/share/95075b8f92bb49c297085cba9c1c89a9)
+- [Nginx-GUI-For-Windows_x64_v1.6.zip](http://disk.321aiyi.com/share/235943a302e140a4b69b005f4874446e)
+- [国内节点采用的云盘项目开源地址](https://github.com/onlyGuo/disk)
+
 
 ## New idea
 If you like algorithms, you can implement them [here](https://github.com/onlyGuo/nginx-conf-analysis).  
