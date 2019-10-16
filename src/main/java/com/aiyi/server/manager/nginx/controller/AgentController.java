@@ -307,6 +307,9 @@ public class AgentController {
                     NgxParam param = (NgxParam) a;
                     NginxUpstreamItem item = new NginxUpstreamItem();
                     List<String> values = param.getValues();
+                    if(values.isEmpty()){
+                        return;
+                    }
                     item.setAddress(values.get(0));
                     if (values.size() > 1) {
                         item.setWeight(Integer.parseInt(values.get(1).replace("weight=", "").trim()));
