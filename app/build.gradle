@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'site.leojay'
-version '1.0'
+version '1.6'
 
 sourceCompatibility = 1.8
 

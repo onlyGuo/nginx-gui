@@ -17,7 +17,7 @@ RUN apt-get install -y ssh \
     && apt-get install -y zlib1g-dev
 
 # 添加nginx源码，准备编译
-ADD docker/nginx-1.16.1.tar.gz /ngin
+ADD docker/nginx-1.16.1.tar.gz /nginx
 
 WORKDIR /nginx/nginx-1.16.1/
 
@@ -31,7 +31,8 @@ RUN make && make install && /usr/local/nginx/sbin/nginx
 
 WORKDIR /
 #导入 springboot 程序
-ADD build/libs/app-1.0.jar server.jar
+#ADD build/libs/app-1.0.jar server.jar
+ADD docker/app-1.6.jar server.jar
 #导入配置
 ADD docker/conf.properties conf.properties
 
@@ -40,5 +41,4 @@ EXPOSE 80
 EXPOSE 8889
 
 # 分别启动服务
-#CMD service nginx start && java -jar /server.jar
-CMD java -jar /server.jar
+CMD /usr/local/nginx/sbin/nginx && java -jar /server.jar
