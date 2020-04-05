@@ -15,8 +15,6 @@
 
 这个版本是我从原作者Fork过来，由于不熟悉maven，我改成了gradle项目结构，为了配置简单，我构建了[dockerfile](app/Dockerfile)。使用了Nginx 1.16.1版本
 
-
-
 ## Download
 ### Builder release-1.6
 If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.6](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6)
@@ -42,26 +40,65 @@ In the future, it will be a nginx configuration file management tool library sup
 ## How to use source code?
 
 1. If your system is Mac os or idea, please copy "conf.properties" to parent directory。
-
 2. Please eidt "conf.properties", fill in your nginx path to "conf.properties".
-
 3. Now, please experience!, default account and pwssword is "admin".
+
+
+
+## Docker Hub
+
+ducker hub https://hub.docker.com/r/crazyleojay/nginx_ui
+
+ 拉取镜像：
+
+```dockerfile
+docker pull crazyleojay/nginx_ui
+```
+
+run
+
+```dockerfile
+docker run --detach \
+--publish 80:80 --publish 8889:8889 \
+--name nginx_ui \
+--restart always \
+crazyleojay/nginx_ui:latest
+```
+
+
+
+持久化：
+
+配置文件路径：`/usr/local/nginx/conf/nginx.conf`
+
+开发者可以自行配置。
+
+```dockerfile
+docker run --detach \
+--publish 80:80 --publish 8889:8889 \
+--name nginx_ui \
+--restart always \
+--volume /home/nginx.conf:/usr/local/nginx/conf/nginx.conf \
+crazyleojay/nginx_ui:latest
+```
+
+
 
 ## AC QQ Group
 群号:933481759
 
 ## UI
-![登录](https://raw.githubusercontent.com/onlyGuo/nginx-gui/master/doc/login.png)
+![登录](doc/login.png)
 
-![主页](https://raw.githubusercontent.com/onlyGuo/nginx-gui/master/doc/home.png)
+![主页](doc/home.png)
 
-![监听](https://raw.githubusercontent.com/onlyGuo/nginx-gui/master/doc/lisner.png)
+![监听](doc/lisner.png)
 
-![负载](https://raw.githubusercontent.com/onlyGuo/nginx-gui/master/doc/upstream.png)
+![负载](doc/upstream.png)
 
-![规则](https://raw.githubusercontent.com/onlyGuo/nginx-gui/master/doc/location.png)
+![规则](doc/location.png)
 
-![配置](https://raw.githubusercontent.com/onlyGuo/nginx-gui/master/doc/conf.png)
+![配置](doc/conf.png)
 
 ## LICENCE
 
