@@ -1,0 +1,86 @@
+*{
+    padding:0;
+    margin:0;
+    font-family: "Microsoft YaHei UI";
+}
+
+.aiyi-tools-table-list table{
+    border-collapse: collapse;
+    border: 1px solid #009688;
+    box-shadow: gray 0 0 30px -5px;
+    text-align: center;
+    width: 100%;
+}
+.aiyi-tools-table-list .head{
+    font-size: 16px;
+    background-color: #009688;
+    color: white;
+    border: none;
+    line-height: 35px;
+}
+.aiyi-tools-table-list .head th{
+    min-width: 100px;
+}
+
+.aiyi-tools-table-list .head th:hover{
+    background-color: #008678;
+}
+.aiyi-tools-table-list tr{
+    line-height: 30px;
+    border: 1px solid #d4ecea;
+}
+.aiyi-tools-table-list td{
+    border: 1px solid #d4ecea;
+    word-wrap: break-word;
+    max-width: 400px;
+}
+.aiyi-tools-table-list tr:hover{
+    /*background-color: #b2d6cb;*/
+    background-color: #EEE;
+}
+.aiyi-tools-table-list tr.head:hover{
+    background-color: #009688;
+}
+.table-block{
+    display: inline-block;
+    width: 100px;
+    height: 20px;
+    margin-top: 10px;
+}
+.aiyi-tools-table-list .page{
+    padding-top: 20px;
+    height: 30px;
+    width: 100%;
+}
+.aiyi-tools-table-list .page .page-number{
+    float: left;
+    display: inline-block;
+    line-height: 30px;
+}
+.aiyi-tools-table-list .page .page-number select{
+    height: 25px;
+}
+.aiyi-tools-table-list .page .page-menu{
+    float: right;
+    display: inline-block;
+}
+.aiyi-tools-table-list .page .page-menu span{
+    text-align: center;
+    display: inline-block;
+    padding: 5px;
+    width: 24px;
+    border-top: 1px solid dodgerblue;
+    border-left: 1px solid dodgerblue;
+    border-bottom: 1px solid dodgerblue;
+    cursor: pointer;
+}
+.aiyi-tools-table-list .page .page-menu span.end{
+    border-right: 1px solid dodgerblue;
+}
+.aiyi-tools-table-list .page .page-menu span.this-page{
+    cursor: auto;
+    background-color: #DDF;
+}
+.aiyi-tools-table-list .page .page-menu span:hover{
+    background-color: #DDF;
+}

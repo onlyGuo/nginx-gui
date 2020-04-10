@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>讯恒达-内部知识管理系统</title>
+<script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/ckeditor/ckeditor.js"></script>
+<style type="text/css">
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	body, html{
+		height: 100%;
+	}
+	.head{
+		height: 50px;
+		background-color: blue;
+	}
+	.head h2{
+		color: white;
+		height: 50px;
+		line-height: 50px;
+		margin-left: 20px;
+	}
+	.left{
+		width: 300px;
+		height: calc(100% - 50px);
+		float: left;
+		box-shadow: 0 0 20px 0;
+		overflow: auto;
+	}
+	.left ul li{
+		height: 25px;
+		line-height: 25px;
+		cursor: pointer;
+	}
+	.left ul li img{
+		height: 20px;
+		width: 20px;
+	}
+	.left ul li:hover {
+		background-color: #CCC;
+	}
+	.left ul li.add{
+		text-align: center;
+	}
+	.right{
+		width: calc(100% - 330px);
+		float: right;
+		height: calc(100% - 50px);
+		overflow: auto;
+	}
+	.right .top button{
+		height: 30px;
+		width: 60px;
+		margin: 10px;
+		display: none;
+	}
+	.right .top button.show{
+		display: inline-block;
+	}
+</style>
+</head>
+<body>
+	<div class="head"><h2>讯恒达</h2></div>
+	<div class="left">
+		<ul>
+			<li class="link" href="${backUrl!'/'}">
+				<img alt="到上一级" src="/img/back.png">…
+			</li>
+			<#list items as item>
+				<#if (item.file)?? && (item.file) == "N">
+					<li class="link" href="${item.path}.p">
+						<img alt="${item.name}" src="/img/folder.png">
+						${item.name}
+					</li>
+				<#else>
+					<li class="link" href="${item.path}.p">
+						<img alt="${item.name}" src="/img/document.png">
+						${item.name}
+					</li>
+				</#if>
+			</#list>
+			<li class="add">+添加</li>
+		</ul>
+	</div>
+	<div class="right">
+		<div class="top">
+			<button class="show save" style="position: absolute; right: 10px;">保存</button>
+			<div class="content" id="content">
+				${content!'该页面是一个新建的页面，暂无任何数据，您可以在这里编辑该页面内容'}
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		$(function(){
+			var CKEditor = CKEDITOR.replace('content', {
+				filebrowserImageUploadUrl : '/method/upload_img.do',
+	            language : 'zh-cn',
+	            image_previewText:' ' ,
+	            height: 8000
+			});
+			console.log(CKEditor.getData());
+			
+			$(".left ul li.link").click(function(){
+				location.href = $(this).attr("href");
+			});
+			$(".left ul li.add").click(function(){
+				var loc = location.href.replace("://", "");
+				if(loc.indexOf("/")){
+					loc = loc.substr(loc.indexOf("/") + 1) + "/";
+				}else{
+					loc = "";
+				}
+				loc = decodeURI(loc);
+				loc = loc.replace(".p/", "/");
+				var name = prompt("请输入文件或文件夹名称:",loc + "未命名");
+				if(name){
+					$.post("/method/add", {
+						name:name
+					}, function(res){
+						if(res.result){
+							var newLocal = "http://" + window.location.host + "/" + name + ".p";
+							location.href = newLocal;
+						}else{
+							alert(res.message);
+						}
+					}).error(function(){
+						alert("操作失败");
+					});
+				}
+			});
+			
+			$(".right .top .save").click(function(){
+				var loc = location.href.replace("://", "");
+				if(loc.indexOf("/")){
+					loc = loc.substr(loc.indexOf("/") + 1) + "/";
+				}else{
+					loc = "";
+				}
+				loc = decodeURI(loc);
+				loc = loc.replace(".p/", "");
+				$.post("/method/save", {
+					name:loc,
+					content:CKEditor.getData()
+				}, function(res){
+					alert("已保存");
+				});
+			});
+			
+			
+			
+			
+			
+		});
+	
+	</script>
+</body>
+</html>

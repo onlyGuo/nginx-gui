@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<title>监听列表</title>
+<!-- jquery -->
+<script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- 动画 -->
+<link rel="stylesheet" href="../../../css/animate.css">
+<!-- layerUI -->
+<link rel="stylesheet" href="../../../lib/layui/css/layui.css">
+<script type="text/javascript" src="../../../lib/layui/layui.js"></script>
+<!-- table -->
+<link rel="stylesheet" href="../../../lib/htable/common.css">
+<script type="text/javascript" src="../../../lib/htable/jquery.aiyi.tools.table.js"></script>
+<!-- font awesome-->
+<link rel="stylesheet" href="../../../lib/font-awesome/css/font-awesome.min.css">
+<!--<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>-->
+<link rel="stylesheet" href="../../../lib/layer-v3.1.1/layer/theme/default/layer.css">
+<!-- Ajax -->
+<script type="text/javascript" src="../../../js/ajax/core.js"></script>
+<script type="text/javascript" src="../../../js/layerAjaxMsg/default.js"></script>
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout" style="padding:10px;">
+		<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
+		   <legend>服务监听配置</legend>
+		</fieldset>
+		<button class="layui-btn animated fadeInUp" id="addBtn"><i class='layui-icon'>&#xe654;</i> 添加监听配置</button>
+		<div id="table" class="animated fadeInUp" style="margin-top:10px;"></div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		window.layer = layui.layer;
+		var $table = $("#table").createTable({
+            noPage:true,
+            request:"list",
+            colom:[
+                ['name', '监听域名'],
+                ['port', '监听端口'],
+                ['accessLog', '监听日志'],
+                ['errorPageStr', '统一错误页面'],
+                ['work', '操作']
+            ],
+            filter:function (item){
+                item.accessLog = (!item.accessLog ? "-" : item.accessLog);
+                item.errorPageStr = ((!item.errorPageStr || "" == item.errorPageStr) ? "-" : item.errorPageStr);
+            	item.work = "<a style='line-height:25px;height:25px;' class='layui-btn bj' href='javascript:;' desc = '" + item.name + ":" + item.port + "' nm='" + item.name + "'><i class='fa fa-edit'></i> 编辑</a><a style='line-height:25px;height:25px;' class='layui-btn sc' href='javascript:;' desc='" + item.name + ":" + item.port + "'><i class='fa fa-trash-o'></i> 删除</a>"
+                return item;
+            }, success: function (t) {
+				t.find("td a").click(function(){
+				    if($(this).hasClass("bj")){
+				   	 	//编辑
+				    		edit($(this).attr("desc"))
+				    		//parent.window.hTab.open($(this).attr("desc"), "lisner/list/edit/" + $(this).attr("desc"), "监听配置-" + $(this).attr("nm"));
+					}else{
+						var value = $(this).attr("desc");
+						layui.use('layer', function() {
+							var layer = layui.layer;
+							var c = layer.confirm('<p style="padding:10px;">删除监听配置之前请确保其内的监听规则已全部删除。您确定要删除嘛？</p>', {
+								btn: ['确定','取消'], //按钮
+								type:1
+							}, function(){
+								var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在模拟启动, 请稍后...", {
+									time: 0,
+									shade: 0.3
+								});
+								//删除
+								H.del("../list/" + value + "/edit", {}, function(res){
+									location = location;
+								});
+
+							}, function(){
+								return true;
+							});
+						});
+					}
+				});
+            }
+        });
+
+		$("#addBtn").click(function(){
+		    edit(null);
+		});
+		
+		function edit(server){
+			var name = "新建";
+			if(server){
+				name = server;
+			}
+			H.getTxt("../list/" + server + "/edit", function(html){
+				layui.use('layer', function(){
+					var layer = layui.layer;
+					layer.open({
+						type:1,
+						title:"监听配置-" + name,
+						content:"<div style='padding:10px;'>" + html + "</div>",
+						btn:['保存', '取消'],
+						area:['650px', '400px'],
+						maxmin:true,
+						yes:function(){
+							var data = getFromData();
+							for(var i in data.errorPage){
+								var msg = "请规范填写统一错误页面，若不需要请删除错误的填写。";
+								var ss = data.errorPage[i].status;
+								if(ss.length < 1){
+									throwError(msg);
+								}
+								for(var j in ss){
+									if (!isNumber(ss[j])){
+										throwError(msg);
+									}
+								}
+								if(!data.errorPage[i].path){
+									throwError(msg);
+								}
+							}
+
+							//保存
+							layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在模拟启动, 请稍后...", {
+								time: 0,
+								shade: 0.3
+							});
+							H.put("../list/" + server + "/edit", data, function(res){
+								location = location;
+							});
+
+							return false;
+						}
+					});
+
+				});
+			});
+		}
+
+		function throwError(msg){
+		    layer.msg(msg);
+		    throw  new Error(msg);
+		}
+
+        function isNumber(value) {
+            var patrn = /^[0-9]*$/;
+            if (patrn.exec(value) == null || value == "") {
+                return false
+            } else {
+                return true
+            }
+        }
+		
+	</script>
+</body>
+</html>

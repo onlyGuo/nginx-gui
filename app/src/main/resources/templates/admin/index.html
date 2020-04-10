@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<title>管理控制台-Nginx GUI</title>
+<!-- jquery -->
+<script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<link rel="stylesheet" href="../css/main.css">
+<!-- layerUI -->
+<link rel="stylesheet" href="../lib/layui/css/layui.css">
+<script type="text/javascript" src="../lib/layui/layui.js"></script>
+<!-- Main -->
+<script type="text/javascript" src="../js/main.js"></script>
+<!-- Htab -->
+<script type="text/javascript" src="../lib/htab/js/core.js"></script>
+<link rel="stylesheet" href="../lib/htab/css/default.css">
+<!-- Layer -->
+<!--<script type="text/javascript" src="../lib/layer-v3.1.1/layer/layer.js"></script>-->
+<link rel="stylesheet" href="../lib/layer-v3.1.1/layer/theme/default/layer.css">
+<!-- Ajax -->
+<script type="text/javascript" src="../js/ajax/core.js"></script>
+<script type="text/javascript" src="../js/layerAjaxMsg/default.js"></script>
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+		<!-- 头部信息 -->
+		<div class="header layui-header">
+			<div class="layui-logo">Nginx-GUI v1.0</div>
+		    <!-- 头部区域（可配合layui已有的水平导航） -->
+		    <!-- <ul class="layui-nav layui-layout-left">
+		      <li class="layui-nav-item"><a href="">控制台</a></li>
+		      <li class="layui-nav-item"><a href="">商品管理</a></li>
+		      <li class="layui-nav-item"><a href="">用户</a></li>
+		      <li class="layui-nav-item"><a href="javascript:;">其它系统</a>
+		        <dl class="layui-nav-child">
+		          <dd><a href="">邮件管理</a></dd>
+		          <dd><a href="">消息管理</a></dd>
+		          <dd><a href="">授权管理</a></dd>
+		        </dl>
+		      </li>
+		    </ul> -->
+		    <ul class="layui-nav layui-layout-right">
+		      <li class="layui-nav-item">
+		        <a href="javascript:;">admin</a>
+		        <dl class="layui-nav-child">
+		          <dd><a href="">基本资料</a></dd>
+		          <dd><a href="">安全设置</a></dd>
+		        </dl>
+		      </li>
+		      <li class="layui-nav-item"><a href="../logout">退出</a></li>
+		    </ul>
+		</div>
+		
+		<!-- 左侧菜单 -->
+		 <div class="layui-side layui-bg-black">
+		    <div class="layui-side-scroll">
+		      <ul class="layui-nav layui-nav-tree">
+		        <li class="layui-nav-item">
+		          <a href="javascript:;">系统管理</a>
+		          <dl class="layui-nav-child">
+		            <dd><a href="javascript:;" link="sys/status/">服务器状态</a></dd>
+		            <dd><a href="javascript:;" link="sys/info/">系统信息</a></dd>
+		            <dd><a href="javascript:;" link="sys/high/">高级管理</a></dd>
+		          </dl>
+		        </li>
+		        <li class="layui-nav-item">
+		          <a href="javascript:;" link="agent/back/">负载管理</a>
+		        </li>
+		        <li class="layui-nav-item">
+		        	<a href="javascript:;">监听管理</a>
+		        	<dl class="layui-nav-child">
+			          <dd><a href="javascript:;" link="lisner/list/">监听列表</a></dd>
+			          <dd><a href="javascript:;" link="lisner/rule/">规则列表</a></dd>
+			        </dl>
+		        </li>
+		        <li class="layui-nav-item">
+		        	<a href="javascript:;">用户管理</a>
+		        	<dl class="layui-nav-child">
+			          <dd><a href="javascript:;" link="user/repwd/">修改密码</a></dd>
+			        </dl>
+		        </li>
+		        <li class="layui-nav-item">
+		        	<a href="javascript:;" link="doc/">操作手册</a>
+		        </li>
+		      </ul>
+		    </div>
+		  </div>
+		  
+		  <div class="layui-body">
+		  </div>
+		  
+		  <!-- 底部固定区域 -->
+		  <div class="layui-footer">
+		    © layui.com - 底部固定区域
+		  </div>
+	</div>
+	
+	<script type="text/javascript">
+		layui.use('element', function(){
+		  var element = layui.element;
+		});
+	</script>
+</body>
+</html>

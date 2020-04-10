@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>高级配置</title>
+	<script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<!-- 动画 -->
+	<link rel="stylesheet" href="../../../css/animate.css">
+	<!-- layerUI -->
+	<link rel="stylesheet" href="../../../lib/layui/css/layui.css">
+	<script type="text/javascript" src="../../../lib/layui/layui.js"></script>
+	<!-- font awesome-->
+	<link rel="stylesheet" href="../../../lib/font-awesome/css/font-awesome.min.css">
+	<!--<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>-->
+	<link rel="stylesheet" href="../../../lib/layer-v3.1.1/layer/theme/default/layer.css">
+	<!-- Ajax -->
+	<script type="text/javascript" src="../../../js/ajax/core.js"></script>
+	<script type="text/javascript" src="../../../js/layerAjaxMsg/default.js"></script>
+	<!-- Editor -->
+<!--	<link rel=stylesheet href="${ctx}/codemirror/doc/docs.css">-->
+	<link rel="stylesheet" href="${ctx}/codemirror/lib/codemirror.css">
+	<link rel="stylesheet" href="${ctx}/codemirror/addon/hint/show-hint.css"/>
+<!--	<link rel="stylesheet" href="${ctx}/codemirror/theme/pastel-on-dark.css">-->
+	<script src="${ctx}/codemirror/lib/codemirror.js"></script>
+	<script src="${ctx}/codemirror/mode/nginx/nginx.js"></script>
+	<script src="${ctx}/codemirror/addon/hint/show-hint.js"></script>
+	<script src="${ctx}/codemirror/addon/hint/anyword-hint.js"></script>
+	<script src="${ctx}/codemirror/addon/selection/active-line.js"></script>
+	<style>
+		.CodeMirror {
+			border: 1px solid #eee;
+			height: auto;
+		}
+
+		.CodeMirror-scroll {
+			height: auto;
+			overflow-y: hidden;
+			overflow-x: auto;
+		}
+	</style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout" style="padding:10px;">
+	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
+		<legend>Nginx 高级配置</legend>
+	</fieldset>
+	<div class="layui-container" style="width: 98%;">
+		<div class="layui-layer-border" style="background-color: #EEE">
+			<div class="layui-row">
+				<div class="layui-col-md6">
+					<div class="layui-btn-group">
+						<button class="layui-btn layui-btn-primary" id="checkBtn">
+							<i class="fa fa-check"></i> 检验配置
+						</button>
+					</div>
+				</div>
+				<div class="layui-col-md6" style="text-align: right;">
+					<div class="layui-btn-group">
+						<button class="layui-btn layui-btn-primary" id="saveBtn">
+							<i class="fa fa-save"></i> 保存并热加载
+						</button>
+						<button class="layui-btn layui-btn-primary" id="refreshBtn">
+							<i class="fa fa-refresh"></i> 载入最新配置
+						</button>
+					</div>
+				</div>
+			</div>
+		<div>
+	</div>
+	<textarea id="code">${confText!''}</textarea>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		layui.use('layer', function() {
+			var layer = layui.layer;
+			var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+				mode: "text/x-nginx-conf",
+				styleActiveLine: true,
+				lineNumbers: true,
+				lineWrapping: true,
+				extraKeys: {
+					"Ctrl-Enter": "autocomplete",
+					Tab: function (cm) {
+						var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+						cm.replaceSelection(spaces);
+					}
+				}
+			});
+			// editor.setOption("theme", "pastel-on-dark");
+
+			editor.on("keyup", function (cm, event) {
+				if (!cm.state.completionActive &&
+						((event.keyCode >= 65 && event.keyCode <= 90 ) || event.keyCode == 52 || event.keyCode == 219 || event.keyCode == 190)) {
+					CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+				}
+			});
+
+			$("#checkBtn").click(function(){
+				var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在校验, 请稍后...", {
+					time: 0,
+					shade: 0.3
+				});
+				H.post("conf/check", {conf: editor.getValue()}, function(){
+					layer.msg("<i class='fa fa-check' style='color: #00d95a'></i> 恭喜!校验通过!");
+				}, function (res) {
+					try {
+						var lineIndex = res.message.indexOf(".temp.check:") + 12;
+						var lineNum = res.message.substr(lineIndex);
+						lineNum = lineNum.substr(0, lineNum.indexOf("nginx"));
+						layer.alert("校验失败, 在第: " + lineNum + "行, 报文细节如下:<br/><hr/>" + res.message);
+					}catch (e) {
+						layer.alert("校验失败, 报文细节如下:<br/><hr/>" + res.message);
+					}
+
+				});
+			});
+
+			$("#refreshBtn").click(function(){
+				var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在拉取最新配置, 请稍后...", {
+					time: 0,
+					shade: 0.3
+				});
+				H.getTxt("conf/refresh", {}, function(res){
+					editor.setValue(res);
+					layer.msg("(⊙v⊙)嗯....刷好了");
+				});
+			});
+
+			$("#saveBtn").click(function(){
+				var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在校验, 请稍后...", {
+					time: 0,
+					shade: 0.3
+				});
+				H.put("conf/save", {conf: editor.getValue()}, function(res){
+					layer.msg("保存成功!");
+				});
+			});
+		});
+	});
+
+</script>
+</body>
+</html>

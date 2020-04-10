@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑监听规则</title>
+    <style>
+        .selectBox{
+            display: inline-block;
+        }
+        .selectBox ul{
+            position: fixed;
+            z-index: 1;
+            background: white;
+            box-shadow: grey 0 1px 10px -2px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: none;
+        }
+        .selectBox ul::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+        .selectBox ul::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #535353;
+        }
+        .selectBox ul::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #EDEDED;
+        }
+        .selectBox li{
+            padding: 10px;
+            cursor: pointer;
+        }
+        .selectBox li:hover{
+            background: #E9E7E7;
+        }
+    </style>
+</head>
+<body class="layui-body">
+    <form class="layui-form" style="margin: 10px 20px 10px 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">规则名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_name" value="${(location.name)!''}" placeholder="请输入规则名称"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">映射规则</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_path" value="${(location.path)!''}" placeholder="请输入映射规则"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">监听域</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_server" value="${(location.server)!''}" placeholder="请输入监听域(host:port)"  class="layui-input" style="width:calc(100% - 115px); display: inline-block;">
+                <div class="selectBox">
+                    <a class="layui-btn layui-btn-primary" id="selectServerBtn">选择监听域</a>
+                    <ul>
+                        <#if nginxServers??>
+                            <#list nginxServers as ser>
+                                <li value="${ser.name!''}:${((ser.port)!'')?c}">${ser.name!''}:${((ser.port)!'')?c}</li>
+                            </#list>
+                        </#if>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">代理地址</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_proxyPass" value="${(location.proxyPass)!''}" placeholder="请输代理地址"  class="layui-input" style="width:calc(100% - 115px); display: inline-block;">
+                <div class="selectBox">
+                    <a class="layui-btn layui-btn-primary" id="selectAgentBtn">选择负载域</a>
+                    <ul>
+                        <#if nginxUpstreams??>
+                            <#list nginxUpstreams as agent>
+                                <li value="http://${agent.value!''}">${agent.desp!''}</li>
+                            </#list>
+                        </#if>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">跟路径</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_root" value="${(location.root)!''}" placeholder="请输入跟路径" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">索引文件</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_index" value="${(location.index)!''}" placeholder="请输入索引文件" class="layui-input">
+            </div>
+        </div>
+        <div id="pages">
+            <#if location?? && location.proxySetHeader?? >
+                <#list location.proxySetHeader as hd>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">转发协议</label>
+                        <div class="layui-input-block">
+                            <input name ="header" type="text" value="${(hd.header)!''}" placeholder="输入Header键" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />
+                            <input name ="value" type="text" value="${(hd.value)!''}" placeholder='输入Header值' style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />
+                            <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
+                        </div>
+                    </div>
+                </#list>
+            <#else>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">转发协议</label>
+                    <div class="layui-input-block">
+                        <input name ="header" type="text" placeholder="输入Header键" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />
+                        <input name="value" type="text" placeholder='输入Header值' style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />
+                        <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
+                    </div>
+                </div>
+            </#if>
+        </div>
+        <input id="input_pathId" type="hidden" value="${(pg.pathId)!'-'}">
+        <a id="addHeader" style="float: right;" href='javascript:;'><i class='layui-icon'>&#xe654;</i> 添加转发协议头</a>
+        <a id="addHeaderDefault" style="float: right;" href='javascript:;'><i class='layui-icon'>&#xe654;</i> 添加默认协议头</a>
+
+    </form>
+    
+    <script type="text/javascript">
+            /**
+             * 协议头添加按钮点击事件
+             */
+            $("#addHeader").click(function(){
+                    var html = '<div class="layui-form-item">' +
+                           '     <label class="layui-form-label">协议头</label>' +
+                           '     <div class="layui-input-block">' +
+                           '         <input type="text" name="header" placeholder="请输入协议头" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />' +
+                           '         <input type="text" name="value" placeholder="请输入协议值" style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />' +
+                           '         <a class="layui-icon" href="javascript:;" onclick="deleteNode(this);"><i class="layui-icon" style="font-size: 20px;">&#xe640;</i></a>' +
+                           '     </div>' +
+                           ' </div>';
+                    $("#pages").append(html);
+                });
+
+            $("#addHeaderDefault").click(function(){
+                var html = '<div class="layui-form-item">' +
+                    '     <label class="layui-form-label">协议头</label>' +
+                    '     <div class="layui-input-block">' +
+                    '         <input type="text" name="header" placeholder="请输入协议头" value="X-Real-IP" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />' +
+                    '         <input type="text" name="value" placeholder="请输入协议值" value="$remote_addr" style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />' +
+                    '         <a class="layui-icon" href="javascript:;" onclick="deleteNode(this);"><i class="layui-icon" style="font-size: 20px;">&#xe640;</i></a>' +
+                    '     </div>' +
+                    ' </div>';
+                html += '<div class="layui-form-item">' +
+                    '     <label class="layui-form-label">协议头</label>' +
+                    '     <div class="layui-input-block">' +
+                    '         <input type="text" name="header" placeholder="请输入协议头" value="X-Forwarded-For" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />' +
+                    '         <input type="text" name="value" placeholder="请输入协议值" value="$proxy_add_x_forwarded_for" style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />' +
+                    '         <a class="layui-icon" href="javascript:;" onclick="deleteNode(this);"><i class="layui-icon" style="font-size: 20px;">&#xe640;</i></a>' +
+                    '     </div>' +
+                    ' </div>';
+                $("#pages").append(html);
+            });
+
+    		//选择已有负载域按钮事件
+    		$("#selectAgentBtn").click(function(){
+    		    var $selectUl = $(this).parent().find("ul");
+    		    //显示下拉选择框并绑定事件
+                if($selectUl.css("display") == "block"){
+                    $selectUl.css("display", "none");
+                    $(this).html("选择负载域");
+                }else{
+                    $(this).html("取消选择");
+                    $selectUl.css("display", "block");
+                    $selectUl.find("li").click(function(){
+                        var value = $(this).attr("value");
+                        $("#input_proxyPass").val(value);
+                        $(this).parent().css("display", "none");
+                        $(this).parent().parent().find("a").html("选择负载域");
+                    });
+                }
+            });
+
+            //选择已有负载域按钮事件
+            $("#selectServerBtn").click(function(){
+                var $selectUl = $(this).parent().find("ul");
+                //显示下拉选择框并绑定事件
+                if($selectUl.css("display") == "block"){
+                    $selectUl.css("display", "none");
+                    $(this).html("选择监听域");
+                }else{
+                    $(this).html("取消选择");
+                    $selectUl.css("display", "block");
+                    $selectUl.find("li").click(function(){
+                        var value = $(this).attr("value");
+                        $("#input_server").val(value);
+                        $(this).parent().css("display", "none");
+                        $(this).parent().parent().find("a").html("选择监听域");
+                    });
+                }
+            });
+
+    		//删除节点事件
+    		function deleteNode(t){
+    			console.log(t);
+    			var p = $(t).parent().parent();
+    			console.log(p)
+    			p.remove();
+    		}
+    		
+    		//获得表单数据
+    		function getFromData(){
+    			var data = {
+    				name:$("#input_name").val(),
+    				path:$("#input_path").val(),
+                    root:$("#input_root").val(),
+                    index:$("#input_index").val(),
+                    proxyPass:$("#input_proxyPass").val(),
+                    server:$("#input_server").val(),
+                    proxySetHeader:[]
+    			};
+    			//封装统一错误页面
+    			var $pages = $("#pages .layui-form-item");
+    			for(var i = 0; i < $pages.length; i++){
+    			    var s = $($pages[i]).find("input[name='header']").val();
+    			    console.log(s);
+    				data.proxySetHeader.push({
+    					header: s,
+    					value: $($pages[i]).find("input[name='value']").val()
+    				});
+    			}
+    			console.log(data);
+    			return data;
+    		}
+    
+    </script>
+    
+</body>
+</html>

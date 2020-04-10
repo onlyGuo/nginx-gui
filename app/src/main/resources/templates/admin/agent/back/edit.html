@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑负载</title>
+</head>
+<body class="layui-body">
+    <form class="layui-form" style="margin: 10px 20px 10px 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">负载描述</label>
+            <div class="layui-input-block">
+                <input id="upstream_desp" type="text" name="desp" placeholder="请输入节点描述" value="${(upstream.desp)!''}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">负载类型</label>
+            <div class="layui-input-block">
+            		<input id="upstream_name" type="text" name="type" value="${(upstream.name)!'upstream'}" class="layui-input" disabled style="background-color: #EEE" />
+            		<!-- <select name="type">
+                    <option value="">请选择节点类型</option>
+                    <option value="upstream">upstream</option>
+                </select> -->
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">负载名称</label>
+            <div class="layui-input-block">
+            		<input id="upstream_value" type="text" name="type" placeholder="请输入负载名，不允许出现特殊字符" value="${(upstream.value)!''}" class="layui-input" <#if upstream??>disabled style="background-color: #EEE;"</#if>/>
+            </div>
+        </div>
+		<div id="nodeEdits">
+			<#if upstream??>
+				<#list upstream.items as nodeItem>
+			        <div class="layui-form-item">
+			            <label class="layui-form-label">节点地址</label>
+			            <div class="layui-input-block">
+			                <input type="text" name="host" placeholder="请输入节点地址,含端口" value="${nodeItem.address!''}" class="layui-input" style="width:300px; display: inline-block;">
+			                <input type="number" name="weight" placeholder="节点权重" value="${nodeItem.weight!''}" class="layui-input"  style="width:100px; display: inline-block;">
+			                <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
+			            </div>
+			        </div>
+		   		</#list>
+		   	<#else>
+		   		<div class="layui-form-item">
+		            <label class="layui-form-label">节点地址</label>
+		            <div class="layui-input-block">
+		                <input type="text" name="host" placeholder="请输入节点地址,含端口" class="layui-input" style="width:300px; display: inline-block;">
+		                <input type="number" name="weight" placeholder="节点权重" class="layui-input"  style="width:100px; display: inline-block;">
+		                <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
+		            </div>
+		        </div>
+		    </#if>
+		</div>
+		<a id="addNode" style="float: right;" href="javascript:"><i class='layui-icon'>&#xe654;</i> 添加新节点</a>
+    </form>
+    
+    <script type="text/javascript">
+    		$("#addNode").click(function(){
+    			var html = '<div class="layui-form-item">' +
+	    		       '     <label class="layui-form-label">节点地址</label>' +
+	    		       '     <div class="layui-input-block">' +
+	    		       '         <input type="text" name="host" placeholder="请输入节点地址,含端口" class="layui-input" style="width:300px; display: inline-block;">' +
+	    		       '         <input type="number" name="weight" placeholder="节点权重" class="layui-input"  style="width:100px; display: inline-block;">' +
+	    		       '         <a class="layui-icon" href="javascript:;" onclick="deleteNode(this);"><i class="layui-icon" style="font-size: 20px;">&#xe640;</i></a>' +
+	    		       '     </div>' +
+	    		       ' </div>';
+    			$("#nodeEdits").append(html);
+    		});
+    		function deleteNode(t){
+    			if($("#nodeEdits .layui-form-item").length <= 1){
+    				layer.msg("必须存在一个节点地址");
+    				return;
+    			}
+    			console.log(t);
+    			var p = $(t).parent().parent();
+    			console.log(p);
+    			p.remove();
+    		}
+    		
+    		//获得表单数据
+    		function getFromData(){
+    			var data = {
+    				name:$("#upstream_name").val(),
+    				value:$("#upstream_value").val(),
+    				desp:$("#upstream_desp").val(),
+    				items:[]
+    			};
+    			//封装节点数据
+    			var $nodes = $("#nodeEdits .layui-form-item");
+    			for(var i = 0; i < $nodes.length; i++){
+    				data.items.push({
+    					address: $($nodes[i]).find("input[name='host']").val(),
+    					weight: $($nodes[i]).find("input[name='weight']").val()
+    				});
+    			}
+    			console.log(data);
+    			return data;
+    		}
+    
+    </script>
+    
+</body>
+</html>

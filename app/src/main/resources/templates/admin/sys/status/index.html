@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<title>系统信息</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+	<!-- jquery -->
+	<script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="../../../lib/layui/css/layui.css">
+    <!-- 动画 -->
+	<link rel="stylesheet" href="../../../css/animate.css">
+	<script type="text/javascript" src="../../../lib/layui/layui.js"></script>
+	<script type="text/javascript" src="../../../lib/echarts/echarts.min.js"></script>
+	<script type="text/javascript" src="../../../lib/echarts/macarons.js"></script>
+	<script type="text/javascript" src="../../../js/ajax/core.js"></script>
+	<script type="text/javascript" src="../../../js/layerAjaxMsg/default.js"></script>
+<!--	<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>-->
+	<link rel="stylesheet" href="../../../lib/layer-v3.1.1/layer/theme/default/layer.css">
+	<style type="text/css">
+		.layui-btn.dis{
+			background-color: #CCC
+		}
+	</style>
+</head>
+<body style="padding:10px;">
+	<blockquote class="layui-elem-quote animated fadeInUp">注意：Mac和部分Linux用户可能会出现Nginx已启动但无法检测到，以及无法绑定80端口的问题。该问题可能由于系统权限导致。<br/>
+		以Mac系统为例，出现该问题时，(方案1)请将本项目使用Maven编译出来，并已sudo权限运行。(方案2)使用sudo权限强制停止Nginx，再用本项目启动。
+	</blockquote>
+
+	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
+	   <legend>Nginx快速管理</legend>
+	</fieldset>
+	<div class="layui-form animated fadeInUp">
+		<div class="layui-form-item">
+			<label class="layui-form-label">Nginx状态</label>
+			<div class="layui-input-block">
+				<span id="loading-span" class="layui-form-label"><i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#x1002;</i>获取中...</span>
+				<input id="nginxSwich" lay-filter="nginxSwich" type="checkbox" ${nginxStart?string("checked=\"checked\"", "")} lay-skin="switch" lay-text="ON|OFF">
+				<button id="reloadBtn" style="margin-left:10px;margin-top: 5px; height:30px; line-height:30px; display:none;" class='layui-btn ${nginxStart?string("", "dis")}'><i class='layui-icon'>&#x1002;</i> 重启</button>
+			</div>
+		</div>
+	</div>
+
+
+	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
+	   <legend>服务器CPU&内存实时动态</legend>
+	</fieldset>
+	<div class="layui-row animated fadeInUp">
+		<div class="layui-col-xs6" id="cpuLisner" style="height:300px;"></div>
+	    <div class="layui-col-xs6" id="memoryLisner" style="height:300px;"></div>
+	</div>
+
+	<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
+	   <legend>服务器硬盘状态</legend>
+	</fieldset>
+	<div class="layui-row animated fadeInUp">
+		<div class="layui-col-xs12" id="diskLisner_12" style="height:300px;"></div>
+	</div>
+
+	<script type="text/javascript">
+		var titleArr=[];
+		var series=[];
+
+		<#list diskInfos as diskInfo>
+		<#if diskInfo.usage??>
+		titleArr.push({
+			text: '"${diskInfo.name}"磁盘详情',
+			x:'${(diskInfo_index*2+1)*100/(2*diskInfos?size)}%',
+			textAlign: 'center'
+		});
+		series.push({
+			name: ['使用比例'],
+			type: 'pie',
+			//radius: [0, '50%'],
+			center: ['${(diskInfo_index*2+1)*100/(2*diskInfos?size)}%', '50%'],
+			data:[
+				{value:${diskInfo.usage.used?c}, name:'已用容量'},
+				{value:${diskInfo.usage.avail?c}, name:'可用容量'}
+			],
+			itemStyle: {
+				emphasis: {
+					shadowBlur: 10,
+					shadowOffsetX: 0,
+					shadowColor: 'rgba(0, 0, 0, 0.5)'
+				}
+			}
+		});
+		</#if>
+		</#list>
+		var diskLisner_12 = echarts.init(document.getElementById('diskLisner_12'),'macarons');
+		var option_12 = {
+			title : titleArr,
+			tooltip : {
+				trigger: 'item',
+				formatter: "{a} <br/>{b} : {c} ({d}%)"
+			},
+			legend: {
+				orient: 'vertical',
+				left: 'left',
+				data: ['已用容量','可用容量']
+			},
+			series : series
+		};
+		diskLisner_12.setOption(option_12, true);
+
+		//CPU
+		var cpuChart = echarts.init(document.getElementById('cpuLisner'),'macarons');
+		var option = {
+			title: [{
+				top:"80%",
+		        left: 'center',
+		        text: 'CPU 占用率实时仪表盘'
+		    }],
+		    tooltip : {
+		        formatter: "{a} <br/>{b} : {c}%"
+		    },
+		    toolbox: {
+		        feature: {
+		            restore: {},
+		            saveAsImage: {}
+		        }
+		    },
+		    series: [
+		        {
+		            name: '占用率',
+		            type: 'gauge',
+		            detail: {formatter:'{value}%'},
+		            data: [{value: 50, name: 'CPU'}]
+		        }
+		    ]
+		};
+		setCpuUsedPerc();
+		function setCpuUsedPerc(){
+			H.get("cpuUsedPerc", function(usedPerc){
+				if(!usedPerc){
+					usedPerc = 0;
+				}
+				option.series[0].data[0].value = usedPerc;
+				cpuChart.setOption(option, true);
+				setTimeout(function(){
+					setCpuUsedPerc();
+				}, 1000);
+			});
+		}
+
+
+		var memoryOption = {
+
+		    // Make gradient line here
+		    visualMap: [{
+		        show: false,
+		        type: 'continuous',
+		        seriesIndex: 0,
+		        min: 0,
+		        max: 400
+		    }],
+		    axisPointer: {
+                label: {
+                    formatter: function (params) {
+                        return '已使用  ' + (params.seriesData.length ? '：' + params.seriesData[0].data : '') + "M内存";
+                    }
+                }
+            },
+
+		    title: [{
+		        left: 'center',
+		        text: '内存占使用率（MB）实时分析图'
+		    }],
+		    tooltip: {
+		        trigger: 'axis'
+		    },
+		    xAxis: {
+		        data: ${alwaysMemoryCharts.x}
+		    },
+		    yAxis: {
+		        splitLine: {show: false},
+		    	max:${alwaysMaxTotal!'0'}
+		    },
+		    series: {
+		        type: 'line',
+		        showSymbol: false,
+		        data: ${alwaysMemoryCharts.y}
+		    }
+		};
+		var memoryChart = echarts.init(document.getElementById('memoryLisner'),'macarons');
+		setMemorUsedPerc();
+		function setMemorUsedPerc(){
+			H.get("memoryUsedPerc", function(usedPerc){
+				if(!usedPerc){
+					usedPerc = [];
+				}
+				memoryOption.series.data = usedPerc;
+				memoryChart.setOption(memoryOption, true);
+				setTimeout(function(){
+					setMemorUsedPerc();
+				}, 1000);
+			});
+		}
+		memoryChart.setOption(memoryOption, true);
+		$(window).resize(function() {
+			diskLisner_12.resize();
+			cpuChart.resize();
+			memoryChart.resize();
+		});
+		//为了整体效率，异步获得Nginx的运行状态
+		var $reloadBtn = $("#reloadBtn");
+		$reloadBtn.addClass("dis");
+		H.get("nginx", function(res){
+			$("#loading-span").css("display", "none");
+			$reloadBtn.css("display", "inline-block");
+			if(res.success){
+				if(res.result){
+					$reloadBtn.removeClass("dis");
+					document.getElementById("nginxSwich").checked = "checked";
+				}
+				layui.use('form', function(){
+					  var form = layui.form;
+					  form.render();
+					  //开关监听
+					  form.on("switch(nginxSwich)", function(evt){
+					  	var status = evt.elem.checked;
+					  	$reloadBtn.addClass("dis");
+					  	$reloadBtn.html("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#x1002;</i> 操作中...");
+					  	//var dis = $reloadBtn.hasClass("dis");
+					  	H.put("nginx/" + (status? "start" : "stop"), {}, function(res){
+					  		if(status){
+						  		$reloadBtn.removeClass("dis");
+						  	}else{
+						  		$reloadBtn.addClass("dis");
+						  	}
+					  		$reloadBtn.html("<i class='layui-icon'>&#x1002;</i> 重启");
+					  	});
+					  });
+				});
+
+				//绑定重启按钮事件
+				$reloadBtn.on("click", function(){
+					var $btn = $(this);
+					$btn.addClass("dis");
+					$btn.html("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#x1002;</i> 操作中...");
+					H.put("nginx/reload", {}, function(res){
+						$btn.html("<i class='layui-icon'>&#x1002;</i> 重启");
+						$btn.removeClass("dis");
+				  	});
+				});
+			}else{
+				layui.use('layer', function() {
+					var layer = layui.layer;
+					layer.msg(res.message);
+				});
+			}
+		});
+	</script>
+
+</body>
+</html>

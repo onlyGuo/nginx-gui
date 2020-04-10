@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<title>反响代理列表</title>
+<!-- 动画 -->
+<link rel="stylesheet" href="../../../css/animate.css">
+<!-- jquery -->
+<script type="text/javascript" src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- layerUI -->
+<link rel="stylesheet" href="../../../lib/layui/css/layui.css">
+<script type="text/javascript" src="../../../lib/layui/layui.js"></script>
+<!-- table -->
+<link rel="stylesheet" href="../../../lib/htable/common.css">
+<script type="text/javascript" src="../../../lib/htable/jquery.aiyi.tools.table.js"></script>
+<!-- font awesome-->
+<link rel="stylesheet" href="../../../lib/font-awesome/css/font-awesome.min.css">
+<!--<script type="text/javascript" src="../../../lib/layer-v3.1.1/layer/layer.js"></script>-->
+<link rel="stylesheet" href="../../../lib/layer-v3.1.1/layer/theme/default/layer.css">
+<!-- Ajax -->
+<script type="text/javascript" src="../../../js/ajax/core.js"></script>
+<script type="text/javascript" src="../../../js/layerAjaxMsg/default.js"></script>
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout" style="padding:10px;">
+		<fieldset class="layui-elem-field layui-field-title animated fadeInUp" style="margin-top: 20px;">
+		   <legend>负载均衡配置</legend>
+		</fieldset>
+		<button class="layui-btn animated fadeInUp" id="addBtn"><i class='layui-icon'>&#xe654;</i> 添加负载配置</button>
+		<div id="table" class="animated fadeInUp" style="margin-top:10px;"></div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		var $table = $("#table").createTable({
+            noPage:true,
+            request:"list",
+            colom:[
+                ['desp', '描述'],
+                ['name', '类型'],
+                ['value', '负载名称'],
+                ['itemsLength', '节点数量'],
+                ['work', '操作']
+            ],
+            filter:function (item){
+            	item.work = "<a style='line-height:25px;height:25px;' class='layui-btn bj' href='javascript:;' desc = '" + item.value + "'><i class='fa fa-edit'></i> 编辑</a><a style='line-height:25px;height:25px;' class='layui-btn sc' href='javascript:;' desc='" + item.value + "'><i class='fa fa-trash-o'></i> 删除</a>"
+                return item;
+            }, success: function (t) {
+				t.find("td a").click(function(){
+				    if($(this).hasClass("bj")){
+				   	 	//编辑
+				    		edit($(this).attr("desc"))
+					}else{
+						var value = $(this).attr("desc");
+						layui.use('form', function(){
+							var layer = layui.layer;
+							var c = layer.confirm('<p style="padding:10px;">删除负载配置之前请确保该配置没有被使用。您确定要删除嘛？</p>', {
+							  btn: ['确定','取消'], //按钮
+							  type:1
+							}, function(){
+								var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在模拟启动, 请稍后...", {
+									time: 0,
+									shade: 0.3
+								});
+								//删除
+								H.put("del/" + value, {}, function(res){
+									location = location;
+								});
+
+							}, function(){
+							  return true;
+							});
+						});
+					}
+				});
+            }
+        });
+		
+		$("#addBtn").click(function(){
+			edit("-");
+		});
+		
+		function edit(value){
+			H.getTxt("edit/" + value, function(html){
+				layui.use('form', function() {
+					var layer = layui.layer;
+					var win = layer.open({
+						title: "编辑负载配置",
+						type: 1,
+						content: html,
+						btn: ["保存并热加载", "取消"],
+						area: ['600px', '400px'],
+						maxmin: true,
+						yes: function () {
+							var loding = layer.msg("<i class='layui-icon layui-anim layui-anim-rotate layui-anim-loop'>&#xe63e;</i> 正在模拟启动, 请稍后...", {
+								time: 0,
+								shade: 0.3
+							});
+							H.put("save/", getFromData(), function (res) {
+								layer.close(loding);
+								if (res.success) {
+									layer.close(win);
+									location = location;
+								} else {
+									layer.alert(res.message);
+								}
+							});
+							return false;
+						}
+					});
+				});
+			});
+		}
+	</script>
+</body>
+</html>

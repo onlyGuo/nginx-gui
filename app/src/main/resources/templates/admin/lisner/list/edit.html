@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑监听配置</title>
+    <style>
+        .selectBox{
+            display: inline-block;
+        }
+        .selectBox ul{
+            position: fixed;
+            z-index: 1;
+            background: white;
+            box-shadow: grey 0 1px 10px -2px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: none;
+        }
+        .selectBox ul::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+        .selectBox ul::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #535353;
+        }
+        .selectBox ul::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #EDEDED;
+        }
+        .selectBox li{
+            padding: 10px;
+            cursor: pointer;
+        }
+        .selectBox li:hover{
+            background: #E9E7E7;
+        }
+    </style>
+</head>
+<body class="layui-body">
+    <form class="layui-form" style="margin: 10px 20px 10px 0;">
+    		<div class="layui-form-item">
+            <label class="layui-form-label">监听域名</label>
+            <div class="layui-input-block">
+                <input type="text" id="input_name" value="${(server.name)!''}" placeholder="请输入监听地址，默认为localhost"  class="layui-input" style="width:calc(100% - 131px); display: inline-block;">
+<!--                <div class="selectBox">-->
+<!--                    <a class="layui-btn layui-btn-primary" id="selectAgentBtn">选择负载域</a>-->
+<!--                    <ul>-->
+<!--                        <#if nginxUpstreams??>-->
+<!--                            <#list nginxUpstreams as agent>-->
+<!--                                <li value="${agent.value!''}">${agent.desp!''}</li>-->
+<!--                            </#list>-->
+<!--                        </#if>-->
+<!--                    </ul>-->
+<!--                </div>-->
+                <#if server??>
+                    <input type="number" id="input_port" value="${((server.port)!'')?c}" placeholder="监听端口" class="layui-input"  style="width:125px; display: inline-block;"">
+                <#else>
+                    <input type="number" id="input_port" placeholder="监听端口" class="layui-input"  style="width:125px; display: inline-block;"">
+                </#if>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">监听日志</label>
+            <div class="layui-input-block">
+                <input id="input_accessLog" value="${(server.accessLog)!''}" type="text" placeholder="输入日志保存路径" class="layui-input">
+            </div>
+        </div>
+        <div id="pages">
+            <#if server?? && server.errorPageStr?? >
+                <#list server.errorPage as pg>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">错误页面</label>
+                        <div class="layui-input-block">
+                            <input name ="path" type="text" value="${(pg.path)!''}" placeholder="输入页面地址路径" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />
+                            <input name ="status" type="text" value="${(pg.statusStr)!''}" placeholder='HTTP状态码，多个之间用","分开' style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />
+                            <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
+                        </div>
+                    </div>
+                </#list>
+            <#else>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">错误页面</label>
+                    <div class="layui-input-block">
+                        <input name ="path" type="text" placeholder="输入页面地址路径" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />
+                        <input name="status" type="text" placeholder='HTTP状态码，多个之间用","分开' style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />
+                        <a class="nodeDeleBtn" href="javascript:;" onclick="deleteNode(this);"><i class='layui-icon' style="font-size: 20px;">&#xe640;</i></a>
+                    </div>
+            </div>
+            </#if>
+        </div>
+		<a id="addPage" style="float: right;" href='javascript:;'><i class='layui-icon'>&#xe654;</i> 添加错误页面</a>
+    </form>
+    
+    <script type="text/javascript">
+    		$("#addPage").click(function(){
+    			var html = '<div class="layui-form-item">' +
+	    		       '     <label class="layui-form-label">错误页面</label>' +
+	    		       '     <div class="layui-input-block">' +
+	    		       '         <input type="text" name="path" placeholder="输入页面地址路径" style="display:inline-block;width:calc(calc(100% / 2 ) - 23px);" class="layui-input" />' +
+	    		       '         <input type="text" name="status" placeholder=\'HTTP状态码，多个之间用","分开\' style="display:inline-block;width:calc(calc(100% / 2 ) - 8px);" class="layui-input" />' +
+	    		       '         <a class="layui-icon" href="javascript:;" onclick="deleteNode(this);"><i class="layui-icon" style="font-size: 20px;">&#xe640;</i></a>' +
+	    		       '     </div>' +
+	    		       ' </div>';
+    			$("#pages").append(html);
+    		});
+
+    		//选择已有负载域按钮事件
+    		$("#selectAgentBtn").click(function(){
+    		    var $selectUl = $(this).parent().find("ul");
+    		    //显示下拉选择框并绑定事件
+                if($selectUl.css("display") == "block"){
+                    $selectUl.css("display", "none");
+                    $(this).html("选择负载域");
+                }else{
+                    $(this).html("取消选择");
+                    $selectUl.css("display", "block");
+                    $selectUl.find("li").click(function(){
+                        var value = $(this).attr("value");
+                        $("#input_name").val(value);
+                        $(this).parent().css("display", "none");
+                        $(this).parent().html("选择负载域");
+                    });
+                }
+            });
+
+    		//删除节点事件
+    		function deleteNode(t){
+    			// if($("#pages .layui-form-item").length <= 1){
+    			// 	layer.msg("至少存在一组错误页面");
+    			// 	return;
+    			// }
+    			console.log(t);
+    			var p = $(t).parent().parent();
+    			console.log(p)
+    			p.remove();
+    		}
+    		
+    		//获得表单数据
+    		function getFromData(){
+    			var data = {
+    				name:$("#input_name").val(),
+    				port:$("#input_port").val(),
+                    accessLog:$("#input_accessLog").val(),
+                    errorPage:[]
+    			};
+    			//封装统一错误页面
+    			var $pages = $("#pages .layui-form-item");
+    			for(var i = 0; i < $pages.length; i++){
+    			    var s = $($pages[i]).find("input[name='status']").val();
+    			    console.log(s);
+    				data.errorPage.push({
+    					path: $($pages[i]).find("input[name='path']").val(),
+    					status: s.split(",")
+    				});
+    			}
+    			console.log(data);
+    			return data;
+    		}
+    
+    </script>
+    
+</body>
+</html>

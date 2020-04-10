@@ -1,0 +1,10 @@
+server:
+  port: 8889
+spring:
+  freemarker:
+    suffix: .html
+    cache: false
+  application:
+    name: nginx
+logging:
+  file: logs/nginx-gui.log
