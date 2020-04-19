@@ -16,9 +16,48 @@
 ### Builder release-1.6
 If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.6](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6)
 ## Docker
-感谢[CrazyLeoJay](https://github.com/CrazyLeoJay)提供的Docker版本， 需要docker部署的可以移步至该分支
+感谢[CrazyLeoJay](https://github.com/CrazyLeoJay)提供的Docker版本， 分支地址：
 [gradle-master](https://github.com/onlyGuo/nginx-gui/tree/gradle-master)
 [CrazyLeoJay/nginx-gui](https://github.com/CrazyLeoJay/nginx-gui)
+
+## Docker Hub
+
+ducker hub https://hub.docker.com/r/crazyleojay/nginx_ui
+
+ 拉取镜像：
+
+```dockerfile
+docker pull crazyleojay/nginx_ui
+```
+
+run
+
+```dockerfile
+docker run --detach \
+--publish 80:80 --publish 8889:8889 \
+--name nginx_ui \
+--restart always \
+crazyleojay/nginx_ui:latest
+```
+
+
+
+持久化：
+
+配置文件路径：`/usr/local/nginx/conf/nginx.conf`
+
+开发者可以自行配置。
+
+```dockerfile
+docker run --detach \
+--publish 80:80 --publish 8889:8889 \
+--name nginx_ui \
+--restart always \
+--volume /home/nginx.conf:/usr/local/nginx/conf/nginx.conf \
+crazyleojay/nginx_ui:latest
+```
+
+
 
 ### China download node
 这里提供了国内下载节点， 如果您无法通过以上连接下载release包，可以尝试从下方连接下载(但您需要支付流量费用)：
