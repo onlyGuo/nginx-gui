@@ -15,6 +15,11 @@
 ## Download
 ### Builder release-1.6
 If you want to [download](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6) this package, please go to this link: [https://github.com/onlyGuo/nginx-gui/releases/tag/1.6](https://github.com/onlyGuo/nginx-gui/releases/tag/1.6)
+## 其他版本
+感谢[CrazyLeoJay](https://github.com/CrazyLeoJay)提供的Docker版本， 需要docker部署的可以移步至该分支
+[gradle-master](https://github.com/onlyGuo/nginx-gui/tree/gradle-master)
+[CrazyLeoJay/nginx-gui](https://github.com/CrazyLeoJay/nginx-gui)
+
 ### China download node
 这里提供了国内下载节点， 如果您无法通过以上连接下载release包，可以尝试从下方连接下载(但您需要支付流量费用)：
 - [Nginx-GUI-For-Linux_X64_v1.6.zip](http://disk.321aiyi.com/share/b88e02f8aca04cdd8ce3a1fb02499e79)
