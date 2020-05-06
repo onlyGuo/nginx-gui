@@ -87,7 +87,8 @@ In the future, it will be a nginx configuration file management tool library sup
 3. Now, please experience!, default account and pwssword is "admin".
 
 ## AC QQ Group
-群号:933481759
+群号:933481759(已满)
+群号:274862188
 
 ## UI
 ![登录](https://raw.githubusercontent.com/onlyGuo/nginx-gui/master/doc/login.png)
