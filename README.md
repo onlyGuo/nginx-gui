@@ -84,7 +84,7 @@ In the future, it will be a nginx configuration file management tool library sup
 
 2. Please eidt "conf.properties", fill in your nginx path to "conf.properties".
 
-3. Now, please experience!, default account and pwssword is "admin".
+3. Now, please experience!, the default account and pwssword is "admin".
 
 ## AC QQ Group
 群号:933481759(已满)
