@@ -1,3 +1,12 @@
+<div style="text-align: center;color: #884e4e; background-color: gray">
+<div>现在，它凉了。近两年来没有更新是因为它的确凉了。作者为了生计不得不放弃维护它，现在作者可能正在996,很讽刺...</div>
+<div style="margin: 20px auto">
+    Now she is dead. Since it is dead, it has not been updated in the past two years. The author must give up maintenance to maintain the author's life. Now the author may be doing 996, which is ironic
+</div>
+  <div style="font-size: 30px">🙂</div>
+</div>
+
+
 <p align="center">
   The nginx GUI makes maintenance easy
 </p>
