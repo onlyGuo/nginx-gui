@@ -4,12 +4,7 @@
     Now she is dead. Since it is dead, it has not been updated in the past two years. The author must give up maintenance to maintain the author's life. Now the author may be doing 996, which is ironic
 </div>
   <div style="font-size: 30px">🙂</div>
-    <div>
-        发现了一个依然在维护的分支，主页地址：http://www.nginxwebui.cn/index.html
-    </div>
-    <div>
-        I found a branch that is still under maintenance, which is the home address: http://www.nginxwebui.cn/index.html
-    </div>
+    
 </div>
 
 
