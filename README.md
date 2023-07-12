@@ -8,6 +8,7 @@
 </div>
 
 > 推荐一个好玩的网站MyChatGPT：https://chat.icoding.ink/
+> 这是一个免登录免注册的GPT：https://free.icoding.ink/
 
 
 > Nginx GUI 项目恢复开发，已新建2.0的文件夹： https://github.com/onlyGuo/nginx-gui-2
