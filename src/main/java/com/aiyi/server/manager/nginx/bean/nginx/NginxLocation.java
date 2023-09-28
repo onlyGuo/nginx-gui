@@ -24,7 +24,7 @@ public class NginxLocation {
     private String path;
 
     /**
-     * 资源跟路径
+     * 资源根路径
      */
     private String root;
 
