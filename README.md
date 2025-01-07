@@ -1,14 +1,5 @@
-<div style="text-align: center;color: #884e4e; background-color: gray">
-<div>现在，它凉了。近两年来没有更新是因为它的确凉了。作者为了生计不得不放弃维护它，现在作者可能正在996,很讽刺...</div>
-<div style="margin: 20px auto">
-    Now she is dead. Since it is dead, it has not been updated in the past two years. The author must give up maintenance to maintain the author's life. Now the author may be doing 996, which is ironic
-</div>
-  <div style="font-size: 30px">🙂</div>
-    
-</div>
-
-
-> 这是一个免费且功能齐全的GPT：http://link.fuckicoding.com/
+> 这是一个免费且功能齐全的GPT：http://link.fuckicoding.com
+> [https://onlyguo.github.io/chatgpt-mirror/](https://onlyguo.github.io/chatgpt-mirror/)
 
 
 > Nginx GUI 项目恢复开发，已新建2.0的文件夹： https://github.com/onlyGuo/nginx-gui-2
